@@ -109,7 +109,7 @@ export default async function ShopDetailPage({ params }: ShopDetailPageProps) {
                             <div className="prose prose-lg dark:prose-invert max-w-none">
                                 <h2 className="text-2xl font-semibold mb-4">Hakkında</h2>
                                 <p className="text-muted-foreground leading-relaxed">
-                                    {shop.description[locale as Locale]}
+                                    {shop.description?.[locale as Locale] || ''}
                                 </p>
                             </div>
                         </div>

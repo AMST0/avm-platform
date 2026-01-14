@@ -30,7 +30,7 @@ export interface Shop {
   floor: number;
   logo: string;
   banner?: string;
-  description: LocalizedString;
+  description?: LocalizedString;
   workingHours?: string;
   phone?: string;
   website?: string;
@@ -128,7 +128,7 @@ export interface ShopInput {
   floor: number;
   logo: string;
   banner?: string;
-  description: LocalizedString;
+  description?: LocalizedString;
   workingHours?: string;
   phone?: string;
   website?: string;

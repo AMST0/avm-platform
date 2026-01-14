@@ -117,7 +117,7 @@ export default async function HomePage({
                                     </h3>
 
                                     <p className="text-muted-foreground text-sm mt-2 line-clamp-2">
-                                        {shop.description[locale as Locale]}
+                                        {shop.description?.[locale as Locale]}
                                     </p>
                                 </div>
                             </Link>

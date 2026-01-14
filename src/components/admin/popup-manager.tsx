@@ -59,7 +59,7 @@ export function PopupManager({
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<PopupFormData>({
-        resolver: zodResolver(popupSchema),
+        resolver: zodResolver(popupSchema) as any,
         defaultValues: {
             title: { tr: '', en: '', ru: '', ar: '' },
             image: '',

@@ -77,7 +77,7 @@ export const sliderSchema = z.object({
 });
 
 export type SliderInput = z.input<typeof sliderSchema>;
-export type SliderFormData = z.output<typeof sliderSchema>;
+export type SliderFormData = z.infer<typeof sliderSchema>;
 
 // ==========================================
 // Popup Schema
@@ -92,4 +92,4 @@ export const popupSchema = z.object({
 });
 
 export type PopupInput = z.input<typeof popupSchema>;
-export type PopupFormData = z.output<typeof popupSchema>;
+export type PopupFormData = z.infer<typeof popupSchema>;
