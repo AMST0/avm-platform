@@ -1,6 +1,7 @@
 // ==========================================
 // AVM Platform - Data Layer Public API
 // ==========================================
+// Data layer now exclusively uses Prisma repositories (Mock data removed)
 
 // Re-export all repository functions
 export * from './repositories/shop.repository';
