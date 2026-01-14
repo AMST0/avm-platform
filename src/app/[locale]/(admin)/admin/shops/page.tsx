@@ -88,12 +88,16 @@ export default function AdminShopsPage() {
     };
 
     const handleDelete = async (shopId: string) => {
+        if (!confirm('Bu mağazayı silmek istediğinizden emin misiniz?')) return;
+
+        const toastId = toast.loading('Mağaza siliniyor...');
         try {
             await deleteShopAction(shopId);
             setShops((prev) => prev.filter((s) => s.id !== shopId));
-            toast.success('Mağaza silindi');
+            toast.success('Mağaza başarıyla silindi', { id: toastId });
         } catch (error) {
-            toast.error('Mağaza silinirken bir hata oluştu');
+            console.error('Delete error:', error);
+            toast.error('Mağaza silinirken bir hata oluştu', { id: toastId });
         }
     };
 

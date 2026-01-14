@@ -1,6 +1,5 @@
 import { prisma } from '@/lib/db';
 import { Popup, PopupInput } from '@/lib/types';
-import { mockPopups } from '../mock/popups';
 
 function mapPrismaPopupToPopup(prismaPopup: any): Popup {
     return {
@@ -21,20 +20,13 @@ function mapPrismaPopupToPopup(prismaPopup: any): Popup {
 }
 
 export async function getActivePopup(): Promise<Popup | null> {
-    try {
-        const popup = await prisma.popup.findFirst({
-            where: { isActive: true },
-            orderBy: { updatedAt: 'desc' }, // Get the most recently updated active popup
-        });
+    const popup = await prisma.popup.findFirst({
+        where: { isActive: true },
+        orderBy: { updatedAt: 'desc' }, // Get the most recently updated active popup
+    });
 
-        if (!popup) {
-            return mockPopups.find(p => p.isActive) || null;
-        }
-        return mapPrismaPopupToPopup(popup);
-    } catch (error) {
-        console.warn('DB Connection failed in getActivePopup. Falling back to mock data.');
-        return mockPopups.find(p => p.isActive) || null;
-    }
+    if (!popup) return null;
+    return mapPrismaPopupToPopup(popup);
 }
 
 export async function getPopups(): Promise<Popup[]> {
@@ -45,16 +37,9 @@ export async function getPopups(): Promise<Popup[]> {
 }
 
 export async function getPopupById(id: string): Promise<Popup | null> {
-    try {
-        const popup = await prisma.popup.findUnique({ where: { id } });
-        if (!popup) {
-            return mockPopups.find(p => p.id === id) || null;
-        }
-        return mapPrismaPopupToPopup(popup);
-    } catch (error) {
-        console.warn(`DB Connection failed in getPopupById for ${id}. Falling back to mock data.`);
-        return mockPopups.find(p => p.id === id) || null;
-    }
+    const popup = await prisma.popup.findUnique({ where: { id } });
+    if (!popup) return null;
+    return mapPrismaPopupToPopup(popup);
 }
 
 export async function createPopup(data: PopupInput): Promise<Popup> {

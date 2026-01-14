@@ -64,7 +64,7 @@ export default async function HomePage({
                                 <ArrowRight className="ms-2 h-5 w-5" />
                             </Link>
                         </Button>
-                        <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 px-8 h-12 text-base">
+                        <Button asChild variant="outline" size="lg" className="border-white/30 text-white bg-transparent hover:bg-white/10 px-8 h-12 text-base">
                             <Link href="/events">
                                 {tHero('upcomingEvents')}
                             </Link>
@@ -138,7 +138,7 @@ export default async function HomePage({
                                     <Button asChild size="lg" className="bg-gold hover:bg-gold-light text-navy-dark font-black px-10 h-16 rounded-2xl shadow-2xl shadow-gold/30 transition-all hover:scale-105">
                                         <Link href="/leasing">Hemen Başvur</Link>
                                     </Button>
-                                    <Button asChild size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/20 font-black px-10 h-16 rounded-2xl backdrop-blur-md transition-all hover:scale-105 border-2">
+                                    <Button asChild size="lg" variant="outline" className="border-white/40 text-white bg-transparent hover:bg-white/20 font-black px-10 h-16 rounded-2xl backdrop-blur-md transition-all hover:scale-105 border-2">
                                         <Link href="/leasing">{tCommon('learnMore')}</Link>
                                     </Button>
                                 </div>
@@ -235,7 +235,7 @@ export default async function HomePage({
                                 Mağazaları Keşfet
                             </Link>
                         </Button>
-                        <Button asChild variant="outline" size="lg" className="border-white/40 text-white hover:bg-white/20 font-black px-12 h-16 rounded-2xl backdrop-blur-md transition-all hover:scale-105 text-lg border-2">
+                        <Button asChild variant="outline" size="lg" className="border-white/40 text-white bg-transparent hover:bg-white/20 font-black px-12 h-16 rounded-2xl backdrop-blur-md transition-all hover:scale-105 text-lg border-2">
                             <Link href="/contact">
                                 Bize Ulaşın
                             </Link>

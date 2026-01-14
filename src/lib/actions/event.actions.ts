@@ -15,6 +15,7 @@ export async function getEventBySlugAction(slug: string): Promise<Event | null> 
 export async function createEventAction(data: EventInput): Promise<Event> {
     const event = await eventRepository.createEvent(data);
     revalidatePath('/[locale]/events', 'page');
+    revalidatePath('/', 'layout');
     return event;
 }
 
@@ -22,12 +23,15 @@ export async function updateEventAction(id: string, data: Partial<EventInput>): 
     const event = await eventRepository.updateEvent(id, data);
     revalidatePath('/[locale]/events', 'page');
     revalidatePath(`/[locale]/events/${event.slug}`, 'page');
+    revalidatePath('/', 'layout');
     return event;
 }
 
 export async function deleteEventAction(id: string): Promise<void> {
     await eventRepository.deleteEvent(id);
+    revalidatePath('/[locale]/admin/events', 'page');
     revalidatePath('/[locale]/events', 'page');
+    revalidatePath('/', 'layout');
 }
 
 export async function getUpcomingEventsAction(limit?: number): Promise<Event[]> {

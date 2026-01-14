@@ -66,6 +66,7 @@ export interface Event {
 // ==========================================
 export interface Slider {
   id: string;
+  slug: string;
   title: LocalizedString;
   subtitle?: LocalizedString;
   image: string;
@@ -156,6 +157,7 @@ export interface EventInput {
 }
 
 export interface SliderInput {
+  slug: string;
   title: LocalizedString;
   subtitle?: LocalizedString;
   image: string;

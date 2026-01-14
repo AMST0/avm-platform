@@ -164,12 +164,20 @@ export default function AdminEventsPage() {
     const handleDelete = async (eventId: string) => {
         if (!confirm('Bu etkinliği silmek istediğinizden emin misiniz?')) return;
 
+        const toastId = toast.loading('Etkinlik siliniyor...');
         try {
             await deleteEventAction(eventId);
-            toast.success('Etkinlik silindi');
+
+            // Immediate UI update
+            setUpcomingEvents(prev => prev.filter(e => e.id !== eventId));
+            setPastEvents(prev => prev.filter(e => e.id !== eventId));
+
+            toast.success('Etkinlik başarıyla silindi', { id: toastId });
+            // Direct fetch to be safe
             fetchEvents();
         } catch (error) {
-            toast.error('Etkinlik silinirken hata oluştu');
+            console.error('Delete error:', error);
+            toast.error('Etkinlik silinirken hata oluştu', { id: toastId });
         }
     };
 

@@ -1,10 +1,10 @@
 import { prisma } from '@/lib/db';
 import { Slider, SliderInput } from '@/lib/types';
-import { mockSliders } from '../mock/sliders';
 
 function mapPrismaSliderToSlider(prismaSlider: any): Slider {
     return {
         id: prismaSlider.id,
+        slug: prismaSlider.slug,
         title: {
             tr: prismaSlider.titleTr,
             en: prismaSlider.titleEn,
@@ -28,16 +28,12 @@ function mapPrismaSliderToSlider(prismaSlider: any): Slider {
 }
 
 export async function getSliders(): Promise<Slider[]> {
-    try {
-        const sliders = await prisma.slider.findMany({
-            orderBy: { order: 'asc' },
-            where: { isActive: true },
-        });
-        return sliders.map(mapPrismaSliderToSlider);
-    } catch (error) {
-        console.warn('DB Connection failed in getSliders. Falling back to mock data.');
-        return mockSliders;
-    }
+    console.log('[SliderRepository] Fetching active sliders...');
+    const sliders = await prisma.slider.findMany({
+        orderBy: { order: 'asc' },
+    });
+    console.log(`[SliderRepository] Found ${sliders.length} sliders in DB`);
+    return sliders.map(mapPrismaSliderToSlider);
 }
 
 export async function getAllSliders(): Promise<Slider[]> {
@@ -48,23 +44,17 @@ export async function getAllSliders(): Promise<Slider[]> {
 }
 
 export async function getSliderById(id: string): Promise<Slider | null> {
-    try {
-        const slider = await prisma.slider.findUnique({
-            where: { id },
-        });
-        if (!slider) {
-            return mockSliders.find(s => s.id === id) || null;
-        }
-        return mapPrismaSliderToSlider(slider);
-    } catch (error) {
-        console.warn(`DB Connection failed in getSliderById for ${id}. Falling back to mock data.`);
-        return mockSliders.find(s => s.id === id) || null;
-    }
+    const slider = await prisma.slider.findUnique({
+        where: { id },
+    });
+    if (!slider) return null;
+    return mapPrismaSliderToSlider(slider);
 }
 
 export async function createSlider(data: SliderInput): Promise<Slider> {
     const slider = await prisma.slider.create({
         data: {
+            slug: data.slug,
             titleTr: data.title.tr,
             titleEn: data.title.en,
             titleRu: data.title.ru,
@@ -85,6 +75,7 @@ export async function createSlider(data: SliderInput): Promise<Slider> {
 
 export async function updateSlider(id: string, data: Partial<SliderInput>): Promise<Slider> {
     const updateData: any = {};
+    if (data.slug) updateData.slug = data.slug;
     if (data.image) updateData.image = data.image;
     if (data.mobileImage !== undefined) updateData.mobileImage = data.mobileImage;
     if (data.link !== undefined) updateData.link = data.link;

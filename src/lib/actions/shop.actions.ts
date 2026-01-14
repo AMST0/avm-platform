@@ -30,6 +30,7 @@ export async function deleteShopAction(id: string): Promise<void> {
     await shopRepository.deleteShop(id);
     revalidatePath('/[locale]/admin/shops', 'page');
     revalidatePath('/[locale]/shops', 'page');
+    revalidatePath('/', 'layout'); // Global cache clear for homepage featured shops
 }
 
 export async function toggleShopActiveAction(id: string, isActive: boolean): Promise<Shop> {

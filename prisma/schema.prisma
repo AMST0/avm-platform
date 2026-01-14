@@ -1,7 +1,3 @@
-// ==========================================
-// Prisma Schema - AVM Platform (Simplified)
-// ==========================================
-
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
@@ -12,29 +8,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ==========================================
-// Shop - Simplified (No detail page, popup only)
-// ==========================================
 model Shop {
   id           String   @id @default(uuid())
   name         String
   slug         String   @unique
-  category     String   // fashion, electronics, food, etc.
+  category     String
   floor        Int
-  logo         String   // UploadThing URL
+  logo         String
   phone        String?
   website      String?
-  workingHours String?
-
   featured     Boolean  @default(false)
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  workingHours String?
 }
 
-// ==========================================
-// Event - Campaigns and Events
-// ==========================================
 model Event {
   id        String   @id @default(uuid())
   titleTr   String
@@ -46,7 +35,7 @@ model Event {
   descEn    String
   descRu    String
   descAr    String
-  image     String   // UploadThing URL
+  image     String
   startDate DateTime
   endDate   DateTime
   location  String
@@ -55,11 +44,9 @@ model Event {
   updatedAt DateTime @updatedAt
 }
 
-// ==========================================
-// Slider - Homepage carousel
-// ==========================================
 model Slider {
   id          String   @id @default(uuid())
+  slug        String   @unique
   titleTr     String
   titleEn     String
   titleRu     String
@@ -68,8 +55,8 @@ model Slider {
   subtitleEn  String?
   subtitleRu  String?
   subtitleAr  String?
-  image       String   // UploadThing URL
-  mobileImage String?  // UploadThing URL
+  image       String
+  mobileImage String?
   link        String?
   order       Int
   isActive    Boolean  @default(true)
@@ -77,39 +64,29 @@ model Slider {
   updatedAt   DateTime @updatedAt
 }
 
-// ==========================================
-// Popup - Marketing popups
-// ==========================================
 model Popup {
   id        String   @id @default(uuid())
   titleTr   String
   titleEn   String
   titleRu   String
   titleAr   String
-  image     String   // UploadThing URL
+  image     String
   link      String?
-  frequency String   @default("once") // once | always
+  frequency String   @default("once")
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-// ==========================================
-// Inquiry - Contact and Leasing submissions
-// ==========================================
+
 model Inquiry {
   id        String   @id @default(uuid())
-  type      String   // contact | leasing
-  
-  // Common Fields
+  type      String
   name      String
   email     String
   phone     String
   message   String?
-  
-  // Detail Fields (JSON for flexibility)
-  details   Json?    // stores leasing specific data like brand, size etc.
-  
-  status    String   @default("pending") // pending | read | archived
+  details   Json?
+  status    String   @default("pending")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -4,89 +4,247 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-    console.log('Seeding database...')
+    console.log('Seeding bulk data (Shops & Events) safely...')
 
     // --- Shops ---
-    const zara = await prisma.shop.create({
-        data: {
+    const shops = [
+        {
             name: 'Zara',
             slug: 'zara',
             category: 'fashion',
             floor: 1,
-            logo: 'https://utfs.io/f/key-here-fake', // Placeholder or copy from mock
-            phone: '+90 212 555 01 01',
+            logo: 'https://www.google.com/s2/favicons?domain=zara.com&sz=128',
+            phone: '+90 212 345 00 01',
             website: 'https://www.zara.com',
-            workingHours: '10:00 - 22:00',
             featured: true,
-            isActive: true,
-        }
-    })
-
-    const starbucks = await prisma.shop.create({
-        data: {
+        },
+        {
+            name: 'H&M',
+            slug: 'hm',
+            category: 'fashion',
+            floor: 1,
+            logo: 'https://www.google.com/s2/favicons?domain=hm.com&sz=128',
+            phone: '+90 212 345 00 02',
+            website: 'https://www.hm.com',
+            featured: true,
+        },
+        {
+            name: 'Massimo Dutti',
+            slug: 'massimo-dutti',
+            category: 'fashion',
+            floor: 2,
+            logo: 'https://www.google.com/s2/favicons?domain=massimodutti.com&sz=128',
+            phone: '+90 212 345 00 03',
+            website: 'https://www.massimodutti.com',
+            featured: true,
+        },
+        {
+            name: 'Apple Store',
+            slug: 'apple-store',
+            category: 'electronics',
+            floor: 0,
+            logo: 'https://www.google.com/s2/favicons?domain=apple.com&sz=128',
+            phone: '+90 212 345 00 04',
+            website: 'https://www.apple.com',
+            featured: true,
+        },
+        {
+            name: 'Samsung Experience',
+            slug: 'samsung-experience',
+            category: 'electronics',
+            floor: 0,
+            logo: 'https://www.google.com/s2/favicons?domain=samsung.com&sz=128',
+            phone: '+90 212 345 00 05',
+            website: 'https://www.samsung.com',
+            featured: true,
+        },
+        {
+            name: 'MediaMarkt',
+            slug: 'mediamarkt',
+            category: 'electronics',
+            floor: -1,
+            logo: 'https://www.google.com/s2/favicons?domain=mediamarkt.com&sz=128',
+            phone: '+90 212 345 00 06',
+            website: 'https://www.mediamarkt.com.tr',
+            featured: true,
+        },
+        {
             name: 'Starbucks',
             slug: 'starbucks',
             category: 'food',
             floor: 0,
-            logo: 'https://utfs.io/f/key-here-fake',
-            phone: '+90 212 555 01 02',
-            workingHours: '08:00 - 23:00',
+            logo: 'https://www.google.com/s2/favicons?domain=starbucks.com&sz=128',
+            phone: '+90 212 345 00 07',
+            website: 'https://www.starbucks.com.tr',
             featured: true,
-            isActive: true,
+        },
+        {
+            name: 'Big Chefs',
+            slug: 'big-chefs',
+            category: 'food',
+            floor: 3,
+            logo: 'https://www.google.com/s2/favicons?domain=bigchefs.com.tr&sz=128',
+            phone: '+90 212 345 00 08',
+            website: 'https://www.bigchefs.com.tr',
+            featured: true,
+        },
+        {
+            name: 'Wagamama',
+            slug: 'wagamama',
+            category: 'food',
+            floor: 3,
+            logo: 'https://www.google.com/s2/favicons?domain=wagamama.com&sz=128',
+            phone: '+90 212 345 00 09',
+            website: 'https://www.wagamama.com.tr',
+            featured: true,
+        },
+        {
+            name: 'Sephora',
+            slug: 'sephora',
+            category: 'cosmetics',
+            floor: 1,
+            logo: 'https://www.google.com/s2/favicons?domain=sephora.com&sz=128',
+            phone: '+90 212 345 00 10',
+            website: 'https://www.sephora.com.tr',
+            featured: true,
+        },
+        {
+            name: 'MAC Cosmetics',
+            slug: 'mac-cosmetics',
+            category: 'cosmetics',
+            floor: 1,
+            logo: 'https://www.google.com/s2/favicons?domain=maccosmetics.com&sz=128',
+            phone: '+90 212 345 00 11',
+            website: 'https://www.maccosmetics.com.tr',
+            featured: true,
+        },
+        {
+            name: 'Tiffany & Co.',
+            slug: 'tiffany-co',
+            category: 'jewelry',
+            floor: 0,
+            logo: 'https://www.google.com/s2/favicons?domain=tiffany.com&sz=128',
+            phone: '+90 212 345 00 12',
+            website: 'https://www.tiffany.com',
+            featured: true,
         }
-    })
+    ]
+
+    for (const shop of shops) {
+        await prisma.shop.upsert({
+            where: { slug: shop.slug },
+            update: { ...shop },
+            create: {
+                ...shop,
+                workingHours: '10:00 - 22:00',
+                isActive: true,
+            }
+        })
+    }
 
     // --- Events ---
-    await prisma.event.create({
-        data: {
-            slug: 'summer-fest',
-            titleTr: 'Yaz Festivali',
-            titleEn: 'Summer Festival',
-            titleRu: 'Летний фестиваль',
-            titleAr: 'مهرجان الصيف',
-            descTr: 'Yaz boyunca sürecek müzik ve eğlence dolu festival.',
-            descEn: 'A festival full of music and fun all summer long.',
-            descRu: 'Фестиваль, полный музыки и веселья все лето.',
-            descAr: 'مهرجان مليء بالموسيقى والمرح طوال الصيف.',
-            image: 'https://utfs.io/f/key-here-fake',
-            startDate: new Date('2024-06-01'),
-            endDate: new Date('2024-08-31'),
-            location: 'Main Square',
+    const events = [
+        {
+            slug: 'jazz-festival-2026',
+            titleTr: 'Yaz Caz Festivali',
+            titleEn: 'Summer Jazz Festival',
+            titleRu: 'Летний джазовый фестиваль',
+            titleAr: 'مهرجان جاز الصيف',
+            descTr: 'Ünlü sanatçıların katılımıyla muhteşem bir caz gecesi.',
+            descEn: 'A magnificent jazz night with the participation of famous artists.',
+            descRu: 'Великолепная джазовая ночь с участием известных артистов.',
+            descAr: 'ليلة جاز رائعة بمشاركة فنانين مشهورين.',
+            image: '/jazz_festival.png',
+            startDate: new Date('2026-07-15'),
+            endDate: new Date('2026-07-20'),
+            location: 'Zemin Kat Etkinlik Alanı',
+            isActive: true,
+        },
+        {
+            slug: 'tech-expo-2026',
+            titleTr: 'Geleceğin Teknolojileri Sergisi',
+            titleEn: 'Future Tech Expo 2026',
+            titleRu: 'Выставка технологий будущего',
+            titleAr: 'معرض تقنيات المستقبل',
+            descTr: 'Yapay zeka, robotik ve VR dünyasını keşfedin.',
+            descEn: 'Explore the world of AI, robotics, and VR.',
+            descRu: 'Исследуйте мир ИИ, робототехники и VR.',
+            descAr: 'استكشف عالم الذكاء الاصطناعي والروبوتات والواقع الافتراضي.',
+            image: '/tech_expo.png',
+            startDate: new Date('2026-08-10'),
+            endDate: new Date('2026-08-15'),
+            location: '1. Kat Atrium',
+            isActive: true,
+        },
+        {
+            slug: 'kids-art-workshop',
+            titleTr: 'Yaratıcı Çocuk Sanat Atölyesi',
+            titleEn: 'Creative Kids Art Workshop',
+            titleRu: 'Творческая детская художественная мастерская',
+            titleAr: 'ورشة عمل فنية إبداعية للأطفال',
+            descTr: 'Çocuklar hayallerini tuvale yansıtıyor.',
+            descEn: 'Children reflect their dreams on canvas.',
+            descRu: 'Дети отражают свои мечты на холсте.',
+            descAr: 'الأطفال يعكسون أحلامهم على القماش.',
+            image: '/kids_workshop.png',
+            startDate: new Date('2026-09-05'),
+            endDate: new Date('2026-09-06'),
+            location: '3. Kat Çocuk Alanı',
             isActive: true,
         }
-    })
+    ]
+
+    for (const event of events) {
+        await prisma.event.upsert({
+            where: { slug: event.slug },
+            update: { ...event },
+            create: { ...event }
+        })
+    }
 
     // --- Sliders ---
-    await prisma.slider.create({
-        data: {
-            titleTr: 'Büyük İndirim Günleri',
-            titleEn: 'Big Sale Days',
-            titleRu: 'Дни больших скидок',
-            titleAr: 'أيام التخفيضات الكبرى',
-            subtitleTr: '%50\'ye varan indirimler',
-            subtitleEn: 'Discounts up to 50%',
-            subtitleRu: 'Скидки до 50%',
-            subtitleAr: 'خصومات تصل إلى 50٪',
-            image: 'https://utfs.io/f/key-here-fake',
+    const sliders = [
+        {
+            slug: 'new-season-2026',
+            titleTr: 'ALIŞVERİŞ',
+            titleEn: 'SHOPPING',
+            titleRu: 'ШОППИНГ',
+            titleAr: 'تسوق',
+            subtitleTr: 'Yeni Sezon Keşfi',
+            subtitleEn: 'New Season Discovery',
+            subtitleRu: 'Открытие нового сезона',
+            subtitleAr: 'اكتشاف الموسم الجديد',
+            image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop',
+            order: 0,
+            isActive: true,
+        },
+        {
+            slug: 'tech-world',
+            titleTr: 'TEKNOLOJİ',
+            titleEn: 'TECHNOLOGY',
+            titleRu: 'ТЕХНОЛОГИИ',
+            titleAr: 'تكنولوجيا',
+            subtitleTr: 'Geleceği Keşfedin',
+            subtitleEn: 'Discover the Future',
+            subtitleRu: 'Откройте для себя будущее',
+            subtitleAr: 'اكتشف المستقبل',
+            image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072&auto=format&fit=crop',
             order: 1,
             isActive: true,
         }
-    })
+    ]
 
-    // --- Popups ---
-    await prisma.popup.create({
-        data: {
-            titleTr: 'Hoşgeldiniz',
-            titleEn: 'Welcome',
-            titleRu: 'Добро пожаловать',
-            titleAr: 'أهلاً بك',
-            image: 'https://utfs.io/f/key-here-fake',
-            frequency: 'once',
-            isActive: true,
-        }
-    })
+    for (const slider of sliders) {
+        await prisma.slider.upsert({
+            where: { slug: slider.slug },
+            update: { ...slider },
+            create: { ...slider }
+        })
+    }
 
-    console.log('Seeding finished.')
+    console.log(`Successfully upserted shops, ${events.length} events, and ${sliders.length} sliders.`)
+
+    console.log(`Successfully upserted shops and ${events.length} events with AI visuals.`)
 }
 
 main()
