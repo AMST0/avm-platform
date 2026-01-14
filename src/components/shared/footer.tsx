@@ -12,8 +12,7 @@ import {
     Facebook,
     Instagram,
     Twitter,
-    Youtube,
-    Send
+    Youtube
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -91,10 +90,10 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
 
                     {/* Brand & About */}
-                    <div className="space-y-4">
-                        <h3 className="text-2xl font-bold">
+                    <div className="space-y-6">
+                        <h4 className="text-xl font-bold uppercase tracking-tighter">
                             <span className="text-gold">AVM</span> Platform
-                        </h3>
+                        </h4>
                         <p className="text-white/70 text-sm leading-relaxed">
                             Türkiye'nin en modern alışveriş deneyimi.
                             Moda, teknoloji, eğlence ve daha fazlası tek çatı altında.
@@ -114,9 +113,9 @@ export function Footer() {
                         </div>
                     </div>
 
-                    {/* Quick Links */}
-                    <div className="space-y-4">
-                        <h4 className="text-lg font-semibold text-gold">{t('contact')}</h4>
+                    {/* Contact Info */}
+                    <div className="space-y-6">
+                        <h4 className="text-xl font-bold uppercase tracking-tighter text-gold">{t('contact')}</h4>
                         <ul className="space-y-3 text-sm">
                             <li className="flex items-start gap-3">
                                 <MapPin className="w-5 h-5 text-gold shrink-0 mt-0.5" />
@@ -145,15 +144,14 @@ export function Footer() {
                     </div>
 
                     {/* Navigation Links */}
-                    <div className="space-y-4">
-                        <h4 className="text-lg font-semibold text-gold">Hızlı Erişim</h4>
+                    <div className="space-y-6">
+                        <h4 className="text-xl font-bold uppercase tracking-tighter text-gold">Hızlı Erişim</h4>
                         <ul className="space-y-2 text-sm">
                             {[
                                 { href: '/shops', label: 'Mağazalar' },
                                 { href: '/events', label: 'Etkinlikler' },
-                                { href: '/contact', label: 'İletişim' },
+                                { href: '/leasing', label: 'Kiralama' },
                                 { href: '/about', label: 'Hakkımızda' },
-                                { href: '/privacy', label: 'Gizlilik Politikası' },
                             ].map((link) => (
                                 <li key={link.href}>
                                     <MagneticLink
@@ -167,37 +165,40 @@ export function Footer() {
                         </ul>
                     </div>
 
-                    {/* Newsletter */}
-                    <div className="space-y-4">
-                        <h4 className="text-lg font-semibold text-gold">{t('newsletter')}</h4>
-                        <p className="text-white/70 text-sm">
-                            En son kampanya ve etkinliklerden haberdar olun.
-                        </p>
-                        <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
-                            <Input
-                                type="email"
-                                placeholder={t('newsletterPlaceholder')}
-                                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-gold"
+                    {/* Google Map Location */}
+                    <div className="space-y-6">
+                        <h4 className="text-xl font-bold uppercase tracking-tighter text-gold">Konumumuz</h4>
+                        <div className="w-full h-40 rounded-2xl overflow-hidden border border-white/10 grayscale hover:grayscale-0 transition-all duration-700">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d192697.7932762524!2d28.86703248359375!3d41.00269385000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14caa7040068086b%3A0xe1cc2f9840107b57!2zxLBzdGFuYnVs!5e0!3m2!1sen!2str!4v1705251000000!5m2!1sen!2str"
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                allowFullScreen
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
                             />
-                            <Button
-                                type="submit"
-                                size="icon"
-                                className="bg-gold hover:bg-gold-light text-black shrink-0"
-                            >
-                                <Send className="w-4 h-4" />
-                            </Button>
-                        </form>
+                        </div>
                     </div>
+
                 </div>
             </div>
 
-            {/* Bottom Bar - AMST Signature */}
+            {/* Bottom Bar - AMST Signature & Legal Links */}
             <div className="border-t border-white/10">
                 <div className="container mx-auto px-4 py-6">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-                        <p className="text-white/50">
-                            © {currentYear} AVM Platform. Tüm hakları saklıdır.
-                        </p>
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
+                        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+                            <p className="text-white/50">
+                                © {currentYear} AVM Platform. Tüm hakları saklıdır.
+                            </p>
+                            <div className="flex gap-4 text-white/30 text-xs">
+                                <Link href="/kvkk" className="hover:text-gold transition-colors">KVKK</Link>
+                                <Link href="/cookies" className="hover:text-gold transition-colors">Çerezler</Link>
+                                <Link href="/terms" className="hover:text-gold transition-colors">Şartlar</Link>
+                                <Link href="/privacy" className="hover:text-gold transition-colors">Gizlilik</Link>
+                            </div>
+                        </div>
 
                         {/* AMST Signature with Magnetic Effect */}
                         <div className="flex items-center gap-2 text-white/70">

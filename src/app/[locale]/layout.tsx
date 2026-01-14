@@ -5,6 +5,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { routing, isRtlLocale, type Locale } from '@/i18n/routing';
 import { Toaster } from '@/components/ui/sonner';
 import { AMSTConsoleSignature } from '@/components/shared/amst-console-signature';
+import { GlobalShopPopup } from '@/components/shops/global-shop-popup';
 import "../globals.css";
 
 const geistSans = Geist({
@@ -52,10 +53,12 @@ export default async function LocaleLayout({
         <html lang={locale} dir={dir} suppressHydrationWarning>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+                suppressHydrationWarning
             >
                 <NextIntlClientProvider messages={messages}>
                     <AMSTConsoleSignature />
                     {children}
+                    <GlobalShopPopup />
                     <Toaster position={dir === 'rtl' ? 'bottom-left' : 'bottom-right'} />
                 </NextIntlClientProvider>
             </body>

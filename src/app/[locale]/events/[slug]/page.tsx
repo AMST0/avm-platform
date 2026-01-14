@@ -45,35 +45,37 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             <Header />
 
             <main className="min-h-screen pt-20 pb-16 bg-background">
-                {/* Hero Section */}
-                <section className="relative h-[300px] md:h-[450px] overflow-hidden">
+                {/* Premium Hero Section */}
+                <section className="relative h-[350px] md:h-[500px] flex items-center overflow-hidden bg-navy">
                     {event.image ? (
                         <img
                             src={event.image}
                             alt={event.title[locale as Locale]}
-                            className="absolute inset-0 w-full h-full object-cover"
+                            className="absolute inset-0 w-full h-full object-cover opacity-60"
                         />
                     ) : (
-                        <div className="absolute inset-0 luxury-gradient" />
+                        <div className="absolute inset-0 bg-navy" />
                     )}
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-transparent" />
 
-                    <div className="container mx-auto px-4 h-full flex items-end pb-8 relative z-10">
-                        <div>
+                    <div className="container mx-auto px-4 relative z-10 h-full flex items-end pb-16">
+                        <div className="max-w-4xl w-full">
                             {isPast && (
-                                <Badge variant="secondary" className="mb-4">
+                                <Badge variant="secondary" className="mb-6 bg-white/10 backdrop-blur-md text-white border-white/20 px-4 py-1.5 font-black uppercase tracking-widest text-[10px]">
                                     Sona Erdi
                                 </Badge>
                             )}
-                            <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
+                            <h1 className="text-4xl md:text-7xl font-black text-white mb-8 uppercase tracking-tighter leading-[0.9]">
                                 {event.title[locale as Locale]}
                             </h1>
 
-                            <div className="flex flex-wrap items-center gap-4 text-white/80">
-                                <div className="flex items-center gap-2">
-                                    <Calendar className="h-5 w-5" />
-                                    <span>
+                            <div className="flex flex-wrap items-center gap-8 text-white/70">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                                        <Calendar className="h-5 w-5 text-gold" />
+                                    </div>
+                                    <span className="font-bold tracking-tight">
                                         {startDate.toLocaleDateString(locale, {
                                             day: 'numeric',
                                             month: 'long',
@@ -86,9 +88,11 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                                         })}
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <MapPin className="h-5 w-5" />
-                                    <span>{event.location}</span>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                                        <MapPin className="h-5 w-5 text-gold" />
+                                    </div>
+                                    <span className="font-bold tracking-tight">{event.location}</span>
                                 </div>
                             </div>
                         </div>

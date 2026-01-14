@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLocale } from 'next-intl';
-import { getShops } from '@/lib/data';
+import { getShopsAction, toggleShopActiveAction, deleteShopAction, createShopAction, updateShopAction } from '@/lib/actions/shop.actions';
 import type { Shop, Locale } from '@/lib/types';
 import { CATEGORY_LABELS, FLOOR_LABELS } from '@/lib/types';
 import type { ShopFormData } from '@/lib/schemas';
@@ -17,6 +17,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
 } from '@/components/ui/dialog';
 import {
     Table,
@@ -45,7 +46,6 @@ import {
 import { toast } from 'sonner';
 
 export default function AdminShopsPage() {
-    const locale = useLocale() as Locale;
     const [shops, setShops] = useState<Shop[]>([]);
     const [filteredShops, setFilteredShops] = useState<Shop[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -71,7 +71,7 @@ export default function AdminShopsPage() {
 
     const fetchShops = async () => {
         setIsLoading(true);
-        const data = await getShops();
+        const data = await getShopsAction();
         setShops(data);
         setFilteredShops(data);
         setIsLoading(false);
@@ -88,44 +88,46 @@ export default function AdminShopsPage() {
     };
 
     const handleDelete = async (shopId: string) => {
-        // Mock delete - in real app, call API
-        setShops((prev) => prev.filter((s) => s.id !== shopId));
-        toast.success('Mağaza silindi');
+        try {
+            await deleteShopAction(shopId);
+            setShops((prev) => prev.filter((s) => s.id !== shopId));
+            toast.success('Mağaza silindi');
+        } catch (error) {
+            toast.error('Mağaza silinirken bir hata oluştu');
+        }
     };
 
     const handleToggleActive = async (shopId: string, isActive: boolean) => {
-        // Mock toggle - in real app, call API
-        setShops((prev) =>
-            prev.map((s) => (s.id === shopId ? { ...s, isActive } : s))
-        );
-        toast.success(isActive ? 'Mağaza aktif edildi' : 'Mağaza pasif edildi');
+        try {
+            await toggleShopActiveAction(shopId, isActive);
+            setShops((prev) =>
+                prev.map((s) => (s.id === shopId ? { ...s, isActive } : s))
+            );
+            toast.success(isActive ? 'Mağaza aktif edildi' : 'Mağaza pasif edildi');
+        } catch (error) {
+            toast.error('Giriş yapılamadı');
+        }
     };
 
     const handleFormSubmit = async (data: ShopFormData) => {
-        if (editingShop) {
-            // Update
-            const updatedShop: Shop = {
-                ...editingShop,
-                ...data,
-                updatedAt: new Date(),
-            };
-            setShops((prev) =>
-                prev.map((s) => (s.id === editingShop.id ? updatedShop : s))
-            );
-            toast.success('Mağaza güncellendi');
-        } else {
-            // Create
-            const newShop: Shop = {
-                ...data,
-                id: `shop-${Date.now()}`,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            };
-            setShops((prev) => [...prev, newShop]);
-            toast.success('Mağaza oluşturuldu');
+        try {
+            if (editingShop) {
+                const updatedShop = await updateShopAction(editingShop.id, data);
+                setShops((prev) =>
+                    prev.map((s) => (s.id === editingShop.id ? updatedShop : s))
+                );
+                toast.success('Mağaza güncellendi');
+            } else {
+                const newShop = await createShopAction(data);
+                setShops((prev) => [...prev, newShop]);
+                toast.success('Mağaza oluşturuldu');
+            }
+            setIsFormOpen(false);
+            setEditingShop(null);
+        } catch (error) {
+            console.error(error);
+            toast.error('Bir hata oluştu');
         }
-        setIsFormOpen(false);
-        setEditingShop(null);
     };
 
     return (
@@ -259,11 +261,11 @@ export default function AdminShopsPage() {
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant="outline">
-                                                {CATEGORY_LABELS[shop.category]?.[locale] || shop.category}
+                                                {CATEGORY_LABELS[shop.category]?.['tr'] || shop.category}
                                             </Badge>
                                         </TableCell>
                                         <TableCell>
-                                            {FLOOR_LABELS[shop.floor]?.[locale] || `${shop.floor}. Kat`}
+                                            {FLOOR_LABELS[shop.floor]?.['tr'] || `${shop.floor}. Kat`}
                                         </TableCell>
                                         <TableCell>
                                             <Switch
@@ -315,6 +317,9 @@ export default function AdminShopsPage() {
                         <DialogTitle>
                             {editingShop ? 'Mağaza Düzenle' : 'Yeni Mağaza Ekle'}
                         </DialogTitle>
+                        <DialogDescription>
+                            Mağaza bilgilerini buradan güncelleyebilirsiniz. Değişiklikleri kaydetmeyi unutmayın.
+                        </DialogDescription>
                     </DialogHeader>
                     <ShopForm
                         initialData={editingShop || undefined}

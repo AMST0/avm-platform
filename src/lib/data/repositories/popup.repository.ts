@@ -1,60 +1,87 @@
-// ==========================================
-// AVM Platform - Popup Repository
-// ==========================================
+import { prisma } from '@/lib/db';
+import { Popup, PopupInput } from '@/lib/types';
 
-import type { Popup } from '@/lib/types';
-import { mockPopups } from '../mock/popups';
-
-/**
- * Get active popup
- */
-export async function getActivePopup(): Promise<Popup | null> {
-    return mockPopups.find((popup) => popup.isActive) || null;
-}
-
-/**
- * Get all popups for admin
- */
-export async function getAllPopups(): Promise<Popup[]> {
-    return mockPopups;
-}
-
-// Alias for compatibility
-export const getPopups = getAllPopups;
-
-/**
- * Get popup by ID
- */
-export async function getPopupById(id: string): Promise<Popup | null> {
-    return mockPopups.find((p) => p.id === id) || null;
-}
-
-// Admin functions
-export async function createPopup(data: Omit<Popup, 'id' | 'createdAt' | 'updatedAt'>): Promise<Popup> {
-    const newPopup: Popup = {
-        ...data,
-        id: `popup-${Date.now()}`,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+function mapPrismaPopupToPopup(prismaPopup: any): Popup {
+    return {
+        id: prismaPopup.id,
+        title: {
+            tr: prismaPopup.titleTr,
+            en: prismaPopup.titleEn,
+            ru: prismaPopup.titleRu,
+            ar: prismaPopup.titleAr,
+        },
+        image: prismaPopup.image,
+        link: prismaPopup.link || undefined,
+        frequency: prismaPopup.frequency as 'once' | 'always',
+        isActive: prismaPopup.isActive,
+        createdAt: prismaPopup.createdAt,
+        updatedAt: prismaPopup.updatedAt,
     };
-    mockPopups.push(newPopup);
-    return newPopup;
 }
 
-export async function updatePopup(
-    id: string,
-    data: Partial<Omit<Popup, 'id' | 'createdAt'>>
-): Promise<Popup | null> {
-    const index = mockPopups.findIndex((p) => p.id === id);
-    if (index === -1) return null;
+export async function getActivePopup(): Promise<Popup | null> {
+    const popup = await prisma.popup.findFirst({
+        where: { isActive: true },
+        orderBy: { updatedAt: 'desc' }, // Get the most recently updated active popup
+    });
 
-    mockPopups[index] = { ...mockPopups[index], ...data, updatedAt: new Date() };
-    return mockPopups[index];
+    if (!popup) return null;
+    return mapPrismaPopupToPopup(popup);
 }
 
-export async function deletePopup(id: string): Promise<boolean> {
-    const index = mockPopups.findIndex((p) => p.id === id);
-    if (index === -1) return false;
-    mockPopups.splice(index, 1);
-    return true;
+export async function getPopups(): Promise<Popup[]> {
+    const popups = await prisma.popup.findMany({
+        orderBy: { createdAt: 'desc' },
+    });
+    return popups.map(mapPrismaPopupToPopup);
+}
+
+export async function getPopupById(id: string): Promise<Popup | null> {
+    const popup = await prisma.popup.findUnique({ where: { id } });
+    if (!popup) return null;
+    return mapPrismaPopupToPopup(popup);
+}
+
+export async function createPopup(data: PopupInput): Promise<Popup> {
+    // Logic: If new popup is active, maybe deactivate others? 
+    // Usually only one main popup is shown. But let's stick to simple CRUD.
+
+    const popup = await prisma.popup.create({
+        data: {
+            titleTr: data.title.tr,
+            titleEn: data.title.en,
+            titleRu: data.title.ru,
+            titleAr: data.title.ar,
+            image: data.image,
+            link: data.link,
+            frequency: data.frequency,
+            isActive: data.isActive ?? true,
+        },
+    });
+    return mapPrismaPopupToPopup(popup);
+}
+
+export async function updatePopup(id: string, data: Partial<PopupInput>): Promise<Popup> {
+    const updateData: any = {};
+    if (data.image) updateData.image = data.image;
+    if (data.link !== undefined) updateData.link = data.link;
+    if (data.frequency) updateData.frequency = data.frequency;
+    if (data.isActive !== undefined) updateData.isActive = data.isActive;
+
+    if (data.title) {
+        if (data.title.tr) updateData.titleTr = data.title.tr;
+        if (data.title.en) updateData.titleEn = data.title.en;
+        if (data.title.ru) updateData.titleRu = data.title.ru;
+        if (data.title.ar) updateData.titleAr = data.title.ar;
+    }
+
+    const popup = await prisma.popup.update({
+        where: { id },
+        data: updateData,
+    });
+    return mapPrismaPopupToPopup(popup);
+}
+
+export async function deletePopup(id: string): Promise<void> {
+    await prisma.popup.delete({ where: { id } });
 }

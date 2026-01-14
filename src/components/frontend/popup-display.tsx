@@ -49,17 +49,7 @@ export function PopupDisplay() {
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden">
-                {/* Close Button */}
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 end-2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full"
-                    onClick={handleClose}
-                >
-                    <X className="h-4 w-4" />
-                </Button>
-
+            <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-navy/20">
                 {/* Popup Content */}
                 {popup.link ? (
                     <a

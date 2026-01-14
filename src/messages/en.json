@@ -4,6 +4,7 @@
         "shops": "Shops",
         "events": "Events",
         "contact": "Contact",
+        "leasing": "Leasing",
         "search": "Search...",
         "searchPlaceholder": "Search shops or events...",
         "allCategories": "All Categories",
@@ -18,13 +19,24 @@
         "delete": "Delete",
         "edit": "Edit",
         "add": "Add",
-        "language": "Language"
+        "language": "Language",
+        "links": "Quick Access"
     },
     "hero": {
         "welcome": "Welcome",
         "subtitle": "Where shopping meets entertainment",
         "exploreShops": "Explore Shops",
         "upcomingEvents": "View Events"
+    },
+    "leasing": {
+        "title": "Leasing Application",
+        "subtitle": "Move your business to the future. Take your place in our modern shop areas.",
+        "filterByFloor": "Filter by Floor",
+        "floor": "Floor",
+        "phone": "Phone",
+        "website": "Website",
+        "workingHours": "Working Hours",
+        "scanQr": "Scan QR Code"
     },
     "shops": {
         "title": "Shops",
@@ -57,19 +69,25 @@
         "subscribe": "Subscribe",
         "copyright": "© 2024 AVM Platform. All rights reserved.",
         "digitalArchitecture": "Digital Architecture by",
-        "poweredBy": "AMST"
+        "poweredBy": "AMST",
+        "legal": "Legal",
+        "cookies": "Cookie Policy",
+        "kvkk": "PDPL Clarification Text",
+        "terms": "Terms of Use"
     },
     "admin": {
         "dashboard": "Dashboard",
         "shops": "Shops",
         "events": "Events",
         "sliders": "Slider Management",
-        "popups": "Popup Management",
+        "popups": "Pop-up Management",
+        "inquiries": "Messages & Applications",
         "settings": "Settings",
         "logout": "Logout",
         "addNew": "Add New",
         "editItem": "Edit",
         "deleteConfirm": "Are you sure you want to delete?",
+        "save": "Save",
         "saveSuccess": "Saved successfully",
         "deleteSuccess": "Deleted successfully",
         "formValidation": {
@@ -104,6 +122,10 @@
         "sports": "Sports",
         "cosmetics": "Cosmetics",
         "services": "Services"
+    },
+    "about": {
+        "title": "About Us",
+        "description": "The heart of shopping and lifestyle with over 20 years of experience."
     },
     "floors": {
         "basement": "Basement",

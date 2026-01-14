@@ -31,9 +31,9 @@ export const shopSchema = z.object({
     logo: z.string().min(1, 'Logo zorunludur'),
     phone: z.string().optional(),
     website: z.string().url().optional().or(z.literal('')),
-    workingHours: z.string().optional(),
-    featured: z.boolean().optional().default(false),
-    isActive: z.boolean().optional().default(true),
+
+    featured: z.boolean().default(false),
+    isActive: z.boolean().default(true),
 });
 
 // Input type (form'dan gelen data)

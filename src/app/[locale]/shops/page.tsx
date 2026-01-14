@@ -8,7 +8,7 @@ import { Header, Footer } from '@/components/shared';
 
 interface ShopsPageProps {
     params: Promise<{ locale: string }>;
-    searchParams: Promise<{ category?: string; floor?: string }>;
+    searchParams: Promise<{ category?: string; floor?: string; search?: string }>;
 }
 
 export default async function ShopsPage({
@@ -16,7 +16,7 @@ export default async function ShopsPage({
     searchParams,
 }: ShopsPageProps) {
     const { locale } = await params;
-    const { category, floor } = await searchParams;
+    const { category, floor, search } = await searchParams;
     setRequestLocale(locale);
 
     const t = await getTranslations('shops');
@@ -32,6 +32,11 @@ export default async function ShopsPage({
     if (floor !== undefined && floor !== '') {
         shops = shops.filter((shop) => shop.floor === parseInt(floor));
     }
+    if (search) {
+        shops = shops.filter((shop) =>
+            shop.name.toLowerCase().includes(search.toLowerCase())
+        );
+    }
 
     // Get unique categories and floors from all shops for filter options
     const allShops = await getShops();
@@ -43,15 +48,28 @@ export default async function ShopsPage({
             <Header />
 
             <main className="min-h-screen pt-20 pb-16 bg-background">
-                {/* Hero Section */}
-                <section className="relative py-16 luxury-gradient">
-                    <div className="container mx-auto px-4">
-                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                            {t('title')}
-                        </h1>
-                        <p className="text-lg text-white/70 max-w-2xl">
-                            200+ mağaza ile alışverişin keyfini çıkarın
-                        </p>
+                {/* Premium Hero Section */}
+                <section className="relative h-[300px] md:h-[400px] flex items-center overflow-hidden bg-navy">
+                    {/* Background with AI image */}
+                    <div className="absolute inset-0 z-0">
+                        <img
+                            src="/luxury_shops_hero_bg_1768398513889.png"
+                            className="w-full h-full object-cover"
+                            alt="Luxury Shops"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/80 to-transparent" />
+                    </div>
+
+                    <div className="container mx-auto px-4 relative z-10">
+                        <div className="max-w-3xl">
+                            <h1 className="text-5xl md:text-7xl font-black text-white mb-6 uppercase tracking-tighter">
+                                {t('title')}
+                            </h1>
+                            <div className="w-20 h-1.5 bg-gold rounded-full mb-6" />
+                            <p className="text-xl text-white/70 font-medium leading-relaxed max-w-xl">
+                                200+ seçkin marka ve dünya standartlarında mağaza deneyimi sizi bekliyor.
+                            </p>
+                        </div>
                     </div>
                 </section>
 
@@ -65,6 +83,7 @@ export default async function ShopsPage({
                                 floors={floors}
                                 selectedCategory={category}
                                 selectedFloor={floor}
+                                searchQuery={search}
                                 locale={locale as Locale}
                             />
                         </aside>

@@ -3,8 +3,9 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { useSpotlightStore } from '@/lib/store';
-import { getShops, getEvents } from '@/lib/data';
+import { useSpotlightStore, useShopPopupStore } from '@/lib/store';
+import { getShopsAction } from '@/lib/actions/shop.actions';
+import { getEventsAction } from '@/lib/actions/event.actions';
 import type { Shop, Event, Locale } from '@/lib/types';
 import {
     CommandDialog,
@@ -15,7 +16,7 @@ import {
     CommandList,
     CommandSeparator,
 } from '@/components/ui/command';
-import { Store, Calendar, ArrowRight, Sparkles } from 'lucide-react';
+import { Store, Calendar, ArrowRight, Sparkles, Search, Phone } from 'lucide-react';
 
 export function SpotlightSearch() {
     const t = useTranslations('common');
@@ -30,8 +31,8 @@ export function SpotlightSearch() {
     useEffect(() => {
         const loadData = async () => {
             const [shopsData, eventsData] = await Promise.all([
-                getShops({ isActive: true }),
-                getEvents(),
+                getShopsAction({ isActive: true }),
+                getEventsAction(),
             ]);
             setShops(shopsData);
             setEvents(eventsData);
@@ -46,8 +47,7 @@ export function SpotlightSearch() {
         return shops
             .filter(
                 (shop) =>
-                    shop.name.toLowerCase().includes(lowerQuery) ||
-                    shop.description[locale].toLowerCase().includes(lowerQuery)
+                    shop.name.toLowerCase().includes(lowerQuery)
             )
             .slice(0, 5);
     }, [query, shops, locale]);
@@ -62,9 +62,15 @@ export function SpotlightSearch() {
             .slice(0, 3);
     }, [query, events, locale]);
 
-    const handleSelect = (href: string) => {
+    const openPopup = useShopPopupStore((state) => state.open);
+
+    const handleSelect = (href: string, shop?: Shop) => {
         close();
-        router.push(href);
+        if (shop) {
+            openPopup(shop);
+        } else {
+            router.push(href);
+        }
     };
 
     return (
@@ -87,18 +93,23 @@ export function SpotlightSearch() {
                             <CommandItem
                                 key={shop.id}
                                 value={shop.name}
-                                onSelect={() => handleSelect(`/shops/${shop.slug}`)}
+                                onSelect={() => handleSelect(`/shops/${shop.slug}`, shop)}
                                 className="flex items-center justify-between cursor-pointer"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-navy/10 flex items-center justify-center">
-                                        <Store className="h-4 w-4 text-navy" />
+                                    <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center border border-accent overflow-hidden">
+                                        {shop.logo ? (
+                                            <img
+                                                src={shop.logo}
+                                                alt={shop.name}
+                                                className="w-full h-full object-contain p-1"
+                                            />
+                                        ) : (
+                                            <Store className="h-4 w-4 text-navy" />
+                                        )}
                                     </div>
                                     <div>
                                         <p className="font-medium">{shop.name}</p>
-                                        <p className="text-xs text-muted-foreground line-clamp-1">
-                                            {shop.description[locale]}
-                                        </p>
                                     </div>
                                 </div>
                                 <ArrowRight className="h-4 w-4 text-muted-foreground" />
@@ -111,31 +122,37 @@ export function SpotlightSearch() {
                     <CommandSeparator />
                 )}
 
-                {/* Events */}
-                {filteredEvents.length > 0 && (
-                    <CommandGroup heading={t('events')}>
-                        {filteredEvents.map((event) => (
+                {/* Quick Access */}
+                {!query && (
+                    <>
+                        <CommandSeparator />
+                        <CommandGroup heading={t('links')}>
                             <CommandItem
-                                key={event.id}
-                                value={event.title[locale]}
-                                onSelect={() => handleSelect(`/events/${event.slug}`)}
+                                onSelect={() => handleSelect('/leasing')}
                                 className="flex items-center justify-between cursor-pointer"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center">
-                                        <Calendar className="h-4 w-4 text-gold-dark" />
+                                    <div className="w-8 h-8 rounded-lg bg-navy/5 flex items-center justify-center">
+                                        <Search className="h-4 w-4 text-navy" />
                                     </div>
-                                    <div>
-                                        <p className="font-medium">{event.title[locale]}</p>
-                                        <p className="text-xs text-muted-foreground">
-                                            {event.location}
-                                        </p>
-                                    </div>
+                                    <p className="font-medium">{t('leasing')}</p>
                                 </div>
                                 <ArrowRight className="h-4 w-4 text-muted-foreground" />
                             </CommandItem>
-                        ))}
-                    </CommandGroup>
+                            <CommandItem
+                                onSelect={() => handleSelect('/contact')}
+                                className="flex items-center justify-between cursor-pointer"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-navy/5 flex items-center justify-center">
+                                        <Phone className="h-4 w-4 text-navy" />
+                                    </div>
+                                    <p className="font-medium">{t('contact')}</p>
+                                </div>
+                                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                            </CommandItem>
+                        </CommandGroup>
+                    </>
                 )}
             </CommandList>
         </CommandDialog>

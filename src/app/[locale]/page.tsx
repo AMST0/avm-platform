@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Header, Footer, SpotlightSearch } from '@/components/shared';
+import { FeaturedShopCard } from '@/components/frontend/featured-shop-card';
 import type { Locale } from '@/lib/types';
 
 export default async function HomePage({
@@ -17,9 +18,10 @@ export default async function HomePage({
     const { locale } = await params;
     setRequestLocale(locale);
 
-    const t = await getTranslations('hero');
+    const tHero = await getTranslations('hero');
     const tShops = await getTranslations('shops');
     const tEvents = await getTranslations('events');
+    const tCommon = await getTranslations('common');
 
     // Fetch data
     const [featuredShops, sliders, upcomingEvents] = await Promise.all([
@@ -48,23 +50,23 @@ export default async function HomePage({
                     </Badge>
 
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight">
-                        {t('welcome')}
+                        {tHero('welcome')}
                     </h1>
 
                     <p className="text-xl md:text-2xl text-white/70 mb-10 max-w-2xl mx-auto">
-                        {t('subtitle')}
+                        {tHero('subtitle')}
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button asChild size="lg" className="bg-gold hover:bg-gold-light text-black font-semibold px-8 h-12 text-base">
                             <Link href="/shops">
-                                {t('exploreShops')}
+                                {tHero('exploreShops')}
                                 <ArrowRight className="ms-2 h-5 w-5" />
                             </Link>
                         </Button>
                         <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 px-8 h-12 text-base">
                             <Link href="/events">
-                                {t('upcomingEvents')}
+                                {tHero('upcomingEvents')}
                             </Link>
                         </Button>
                     </div>
@@ -95,37 +97,61 @@ export default async function HomePage({
                     </div>
 
                     {/* Bento Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {featuredShops.map((shop, index) => (
-                            <Link
+                            <FeaturedShopCard
                                 key={shop.id}
-                                href={`/shops/${shop.slug}`}
-                                className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br from-card to-accent/5 border border-border/50 hover:border-gold/50 transition-all duration-300 hover:shadow-xl hover:shadow-gold/5 ${index === 0 ? 'md:col-span-2 md:row-span-2 min-h-[300px] lg:min-h-[400px]' : 'min-h-[200px]'
-                                    }`}
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                                <div className="relative h-full p-6 flex flex-col justify-end">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                                            <Store className="h-6 w-6 text-gold" />
-                                        </div>
-                                        <Badge variant="secondary" className="bg-white/10 backdrop-blur-md text-foreground border-0">
-                                            {shop.floor}. Kat
-                                        </Badge>
-                                    </div>
-
-                                    <h3 className={`font-bold text-foreground group-hover:text-gold transition-colors ${index === 0 ? 'text-2xl lg:text-3xl' : 'text-xl'
-                                        }`}>
-                                        {shop.name}
-                                    </h3>
-
-                                    <p className="text-muted-foreground text-sm mt-2 line-clamp-2">
-                                        {shop.description[locale as Locale]}
-                                    </p>
-                                </div>
-                            </Link>
+                                shop={shop}
+                                index={index}
+                            />
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Leasing CTA Section */}
+            <section className="py-20">
+                <div className="container mx-auto px-4">
+                    <div className="relative overflow-hidden rounded-[3rem] bg-navy min-h-[500px] flex items-center">
+                        {/* Background with AI image */}
+                        <div className="absolute inset-0 z-0">
+                            <img
+                                src="/luxury_mall_leasing_bg_1768398194031.png"
+                                className="w-full h-full object-cover opacity-40"
+                                alt="Luxury Mall leasing"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/80 to-transparent" />
+                        </div>
+
+                        <div className="container mx-auto px-12 relative z-10 flex flex-col lg:flex-row items-center gap-12 py-16">
+                            <div className="flex-1 text-center lg:text-start">
+                                <Badge className="mb-6 bg-gold text-navy-dark border-0 px-4 py-1.5 text-sm font-semibold tracking-wider">
+                                    {tCommon('leasing').toUpperCase()}
+                                </Badge>
+                                <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
+                                    İşinizi Geleceğe Taşıyın
+                                </h2>
+                                <p className="text-xl text-white/80 mb-10 leading-relaxed max-w-2xl font-medium">
+                                    AVM Platform bünyesinde yerinizi alarak markanızı binlerce ziyaretçimizle buluşturun. Modern mağaza alanlarımız sizi bekliyor.
+                                </p>
+                                <div className="flex flex-wrap justify-center lg:justify-start gap-6">
+                                    <Button asChild size="lg" className="bg-gold hover:bg-gold-light text-navy-dark font-black px-10 h-16 rounded-2xl shadow-2xl shadow-gold/30 transition-all hover:scale-105">
+                                        <Link href="/leasing">Hemen Başvur</Link>
+                                    </Button>
+                                    <Button asChild size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/20 font-black px-10 h-16 rounded-2xl backdrop-blur-md transition-all hover:scale-105 border-2">
+                                        <Link href="/leasing">{tCommon('learnMore')}</Link>
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="hidden lg:flex lg:w-1/3 justify-end">
+                                <div className="relative">
+                                    <div className="absolute -inset-8 bg-gold/30 blur-3xl rounded-full animate-pulse" />
+                                    <div className="relative w-32 h-32 lg:w-40 lg:h-40 rounded-[2.5rem] bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center shadow-[0_0_50px_rgba(251,191,36,0.3)]">
+                                        <Sparkles className="w-16 h-16 lg:w-20 lg:h-20 text-navy-dark" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -186,21 +212,30 @@ export default async function HomePage({
             )}
 
             {/* CTA Section */}
-            <section className="py-20 bg-gradient-to-br from-navy via-navy-dark to-black text-white">
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <section className="relative py-32 overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="/modern_mall_lifestyle_bg_1768398221170.png"
+                        className="w-full h-full object-cover"
+                        alt="Shopping Mall"
+                    />
+                    <div className="absolute inset-0 bg-navy/80 backdrop-blur-[2px]" />
+                </div>
+
+                <div className="container mx-auto px-4 text-center relative z-10">
+                    <h2 className="text-4xl md:text-6xl font-black text-white mb-6">
                         Alışverişin Tadını Çıkarın
                     </h2>
-                    <p className="text-white/70 max-w-xl mx-auto mb-8">
-                        200+ mağaza, dünya mutfakları, eğlence ve daha fazlası sizleri bekliyor.
+                    <p className="text-white/80 max-w-2xl mx-auto mb-12 text-xl font-medium leading-relaxed">
+                        200+ mağaza, dünya mutfakları, eğlence ve daha fazlası sizleri bekliyor. Hayatın ritmini burada tutun.
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button asChild size="lg" className="bg-gold hover:bg-gold-light text-black font-semibold">
+                    <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                        <Button asChild size="lg" className="bg-gold hover:bg-gold-light text-navy-dark font-black px-12 h-16 rounded-2xl shadow-2xl shadow-gold/30 transition-all hover:scale-105 text-lg">
                             <Link href="/shops">
                                 Mağazaları Keşfet
                             </Link>
                         </Button>
-                        <Button asChild variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10">
+                        <Button asChild variant="outline" size="lg" className="border-white/40 text-white hover:bg-white/20 font-black px-12 h-16 rounded-2xl backdrop-blur-md transition-all hover:scale-105 text-lg border-2">
                             <Link href="/contact">
                                 Bize Ulaşın
                             </Link>

@@ -22,6 +22,7 @@ const navigation = [
     { href: '/', label: 'home', icon: Home },
     { href: '/shops', label: 'shops', icon: Store },
     { href: '/events', label: 'events', icon: Calendar },
+    { href: '/leasing', label: 'leasing', icon: Search },
     { href: '/contact', label: 'contact', icon: Phone },
 ];
 
@@ -56,8 +57,8 @@ export function Header() {
     return (
         <header
             className={`fixed top-0 start-0 end-0 z-50 transition-all duration-300 ${isScrolled
-                    ? 'glass-header shadow-lg'
-                    : 'bg-transparent'
+                ? 'glass-header shadow-lg'
+                : 'bg-transparent'
                 }`}
         >
             <div className="container mx-auto px-4">
@@ -97,9 +98,6 @@ export function Header() {
                             className="relative"
                         >
                             <Search className="h-5 w-5" />
-                            <kbd className="hidden lg:flex absolute -bottom-1 -end-1 pointer-events-none h-4 px-1 text-[10px] font-medium bg-muted text-muted-foreground rounded border">
-                                ⌘K
-                            </kbd>
                         </Button>
 
                         {/* Language Switcher */}
@@ -112,7 +110,7 @@ export function Header() {
                                     <Menu className="h-5 w-5" />
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="end" className="w-80 p-0">
+                            <SheetContent side="right" className="w-80 p-0">
                                 <div className="flex flex-col h-full">
                                     {/* Mobile Menu Header */}
                                     <div className="flex items-center justify-between p-4 border-b">

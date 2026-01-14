@@ -12,6 +12,7 @@ import {
     Calendar,
     Image,
     Megaphone,
+    Mail,
     Settings,
     LogOut,
     ExternalLink,
@@ -23,6 +24,7 @@ const adminNavigation = [
     { href: '/admin/events', label: 'events', icon: Calendar },
     { href: '/admin/sliders', label: 'sliders', icon: Image },
     { href: '/admin/popups', label: 'popups', icon: Megaphone },
+    { href: '/admin/inquiries', label: 'inquiries', icon: Mail },
 ];
 
 const adminSecondary = [

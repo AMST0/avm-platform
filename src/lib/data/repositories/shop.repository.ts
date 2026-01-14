@@ -1,182 +1,112 @@
-// ==========================================
-// AVM Platform - Shop Repository
-// Future-proof: Currently uses mock data, ready for DB swap
-// ==========================================
+import { prisma } from '@/lib/db';
+import { Shop, ShopFilters, ShopInput } from '@/lib/types';
+import { Prisma } from '@prisma/client';
 
-import type { Shop, ShopCategory } from '@/lib/types';
-import { mockShops } from '../mock/shops';
-
-export interface ShopFilters {
-    category?: ShopCategory;
-    floor?: number;
-    featured?: boolean;
-    isActive?: boolean;
-    search?: string;
+function mapPrismaShopToShop(prismaShop: any): Shop {
+    return {
+        id: prismaShop.id,
+        name: prismaShop.name,
+        slug: prismaShop.slug,
+        category: prismaShop.category as any,
+        floor: prismaShop.floor,
+        logo: prismaShop.logo,
+        phone: prismaShop.phone || undefined,
+        website: prismaShop.website || undefined,
+        featured: prismaShop.featured,
+        isActive: prismaShop.isActive,
+        createdAt: prismaShop.createdAt,
+        updatedAt: prismaShop.updatedAt,
+    };
 }
 
-/**
- * Get all shops with optional filtering
- * @param filters - Optional filters to apply
- * @returns Promise<Shop[]> - Array of shops
- */
 export async function getShops(filters?: ShopFilters): Promise<Shop[]> {
-    // Simulate async DB call
-    let shops = [...mockShops];
+    const where: Prisma.ShopWhereInput = {
+        isActive: true,
+    };
 
     if (filters) {
         if (filters.category) {
-            shops = shops.filter((shop) => shop.category === filters.category);
+            where.category = filters.category;
         }
         if (filters.floor !== undefined) {
-            shops = shops.filter((shop) => shop.floor === filters.floor);
-        }
-        if (filters.featured !== undefined) {
-            shops = shops.filter((shop) => shop.featured === filters.featured);
-        }
-        if (filters.isActive !== undefined) {
-            shops = shops.filter((shop) => shop.isActive === filters.isActive);
+            where.floor = filters.floor;
         }
         if (filters.search) {
-            const searchLower = filters.search.toLowerCase();
-            shops = shops.filter(
-                (shop) =>
-                    shop.name.toLowerCase().includes(searchLower) ||
-                    shop.description.tr.toLowerCase().includes(searchLower) ||
-                    shop.description.en.toLowerCase().includes(searchLower)
-            );
+            where.name = {
+                contains: filters.search,
+                mode: 'insensitive',
+            };
         }
+        if (filters.featured !== undefined) {
+            where.featured = filters.featured;
+        }
+        if (filters.isActive === undefined) {
+            delete where.isActive;
+        } else {
+            where.isActive = filters.isActive;
+        }
+    } else {
+        delete where.isActive;
     }
 
-    return shops;
+    const shops = await prisma.shop.findMany({
+        where,
+        orderBy: {
+            name: 'asc',
+        },
+    });
+
+    return shops.map(mapPrismaShopToShop);
 }
 
-/**
- * Get a single shop by slug
- * @param slug - Shop slug
- * @returns Promise<Shop | null>
- */
 export async function getShopBySlug(slug: string): Promise<Shop | null> {
-    const shop = mockShops.find((s) => s.slug === slug);
-    return shop || null;
+    const shop = await prisma.shop.findUnique({
+        where: { slug },
+    });
+
+    if (!shop) return null;
+    return mapPrismaShopToShop(shop);
 }
 
-/**
- * Get a single shop by ID
- * @param id - Shop ID
- * @returns Promise<Shop | null>
- */
-export async function getShopById(id: string): Promise<Shop | null> {
-    const shop = mockShops.find((s) => s.id === id);
-    return shop || null;
+export async function createShop(data: ShopInput): Promise<Shop> {
+    const shop = await prisma.shop.create({
+        data: {
+            name: data.name,
+            slug: data.slug,
+            category: data.category,
+            floor: data.floor,
+            logo: data.logo,
+            phone: data.phone,
+            website: data.website,
+            featured: data.featured || false,
+            isActive: data.isActive ?? true,
+        },
+    });
+    return mapPrismaShopToShop(shop);
 }
 
-/**
- * Get featured shops
- * @param limit - Maximum number of shops to return
- * @returns Promise<Shop[]>
- */
+export async function updateShop(id: string, data: Partial<ShopInput>): Promise<Shop> {
+    const updateData: any = { ...data };
+    Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
+    const shop = await prisma.shop.update({
+        where: { id },
+        data: updateData,
+    });
+    return mapPrismaShopToShop(shop);
+}
+
 export async function getFeaturedShops(limit?: number): Promise<Shop[]> {
-    const featured = mockShops.filter((shop) => shop.featured && shop.isActive);
-    return limit ? featured.slice(0, limit) : featured;
-}
-
-/**
- * Get shops by category
- * @param category - Shop category
- * @returns Promise<Shop[]>
- */
-export async function getShopsByCategory(category: ShopCategory): Promise<Shop[]> {
-    return mockShops.filter((shop) => shop.category === category && shop.isActive);
-}
-
-/**
- * Get shops by floor
- * @param floor - Floor number
- * @returns Promise<Shop[]>
- */
-export async function getShopsByFloor(floor: number): Promise<Shop[]> {
-    return mockShops.filter((shop) => shop.floor === floor && shop.isActive);
-}
-
-/**
- * Get all unique categories that have active shops
- * @returns Promise<ShopCategory[]>
- */
-export async function getActiveCategories(): Promise<ShopCategory[]> {
-    const categories = new Set<ShopCategory>();
-    mockShops.forEach((shop) => {
-        if (shop.isActive) {
-            categories.add(shop.category);
-        }
+    const shops = await prisma.shop.findMany({
+        where: { isActive: true, featured: true },
+        orderBy: { name: 'asc' },
+        take: limit,
     });
-    return Array.from(categories);
+    return shops.map(mapPrismaShopToShop);
 }
 
-/**
- * Get all floors that have active shops
- * @returns Promise<number[]>
- */
-export async function getActiveFloors(): Promise<number[]> {
-    const floors = new Set<number>();
-    mockShops.forEach((shop) => {
-        if (shop.isActive) {
-            floors.add(shop.floor);
-        }
+export async function deleteShop(id: string): Promise<void> {
+    await prisma.shop.delete({
+        where: { id },
     });
-    return Array.from(floors).sort((a, b) => a - b);
-}
-
-// ==========================================
-// Admin Functions (for future DB integration)
-// ==========================================
-
-/**
- * Create a new shop (Admin)
- * @param data - Shop data
- * @returns Promise<Shop>
- */
-export async function createShop(data: Omit<Shop, 'id' | 'createdAt' | 'updatedAt'>): Promise<Shop> {
-    const newShop: Shop = {
-        ...data,
-        id: `shop-${Date.now()}`,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    };
-    // In real implementation, this would save to DB
-    mockShops.push(newShop);
-    return newShop;
-}
-
-/**
- * Update a shop (Admin)
- * @param id - Shop ID
- * @param data - Partial shop data to update
- * @returns Promise<Shop | null>
- */
-export async function updateShop(
-    id: string,
-    data: Partial<Omit<Shop, 'id' | 'createdAt'>>
-): Promise<Shop | null> {
-    const index = mockShops.findIndex((s) => s.id === id);
-    if (index === -1) return null;
-
-    mockShops[index] = {
-        ...mockShops[index],
-        ...data,
-        updatedAt: new Date(),
-    };
-    return mockShops[index];
-}
-
-/**
- * Delete a shop (Admin)
- * @param id - Shop ID
- * @returns Promise<boolean>
- */
-export async function deleteShop(id: string): Promise<boolean> {
-    const index = mockShops.findIndex((s) => s.id === id);
-    if (index === -1) return false;
-
-    mockShops.splice(index, 1);
-    return true;
 }

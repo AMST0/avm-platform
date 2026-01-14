@@ -6,13 +6,15 @@ import { CATEGORY_LABELS, FLOOR_LABELS, type ShopCategory, type Locale } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Filter, X } from 'lucide-react';
+import { Filter, X, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 interface ShopFiltersProps {
     categories: ShopCategory[];
     floors: number[];
     selectedCategory?: string;
     selectedFloor?: string;
+    searchQuery?: string;
     locale: Locale;
 }
 
@@ -21,6 +23,7 @@ export function ShopFilters({
     floors,
     selectedCategory,
     selectedFloor,
+    searchQuery,
     locale,
 }: ShopFiltersProps) {
     const router = useRouter();
@@ -43,7 +46,7 @@ export function ShopFilters({
         router.push('?');
     }, [router]);
 
-    const hasFilters = selectedCategory || selectedFloor;
+    const hasFilters = selectedCategory || selectedFloor || searchQuery;
 
     return (
         <Card className="sticky top-24">
@@ -67,6 +70,27 @@ export function ShopFilters({
                 </div>
             </CardHeader>
             <CardContent className="space-y-6">
+                {/* Search */}
+                <div>
+                    <h4 className="font-medium mb-3 text-sm text-muted-foreground">
+                        Mağaza Ara
+                    </h4>
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Mağaza adı..."
+                            className="pl-9"
+                            defaultValue={searchQuery}
+                            onChange={(e) => {
+                                // Debounced search would be better, but simple onChange for now
+                                const val = e.target.value;
+                                const timeoutId = setTimeout(() => updateFilter('search', val), 500);
+                                return () => clearTimeout(timeoutId);
+                            }}
+                        />
+                    </div>
+                </div>
+
                 {/* Categories */}
                 <div>
                     <h4 className="font-medium mb-3 text-sm text-muted-foreground">
@@ -78,8 +102,8 @@ export function ShopFilters({
                                 key={category}
                                 variant={selectedCategory === category ? 'default' : 'outline'}
                                 className={`cursor-pointer transition-all ${selectedCategory === category
-                                        ? 'bg-gold text-black hover:bg-gold-light'
-                                        : 'hover:bg-accent'
+                                    ? 'bg-gold text-black hover:bg-gold-light'
+                                    : 'hover:bg-accent'
                                     }`}
                                 onClick={() =>
                                     updateFilter(
@@ -105,8 +129,8 @@ export function ShopFilters({
                                 key={floor}
                                 variant={selectedFloor === floor.toString() ? 'default' : 'outline'}
                                 className={`cursor-pointer transition-all ${selectedFloor === floor.toString()
-                                        ? 'bg-gold text-black hover:bg-gold-light'
-                                        : 'hover:bg-accent'
+                                    ? 'bg-gold text-black hover:bg-gold-light'
+                                    : 'hover:bg-accent'
                                     }`}
                                 onClick={() =>
                                     updateFilter(

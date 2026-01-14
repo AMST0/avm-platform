@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useRef, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { ImageCropper, type AspectRatio } from './image-cropper';
@@ -17,6 +19,7 @@ interface ImageUploadWithCropProps {
     hint?: string;
     disabled?: boolean;
     error?: string;
+    fileName?: string;
 }
 
 export function ImageUploadWithCrop({
@@ -27,6 +30,7 @@ export function ImageUploadWithCrop({
     hint,
     disabled,
     error,
+    fileName,
 }: ImageUploadWithCropProps) {
     const t = useTranslations('admin.imageCropper');
     const inputRef = useRef<HTMLInputElement>(null);
@@ -38,7 +42,7 @@ export function ImageUploadWithCrop({
     const { startUpload } = useUploadThing("imageUploader", {
         onClientUploadComplete: (res) => {
             if (res && res[0]) {
-                onChange(res[0].url);
+                onChange(res[0].ufsUrl || res[0].url);
                 toast.success("Resim başarıyla yüklendi");
             }
             setIsUploading(false);
@@ -59,10 +63,10 @@ export function ImageUploadWithCrop({
             return;
         }
 
-        // Validate file size (max 4MB for UploadThing free tier mostly, keeping 10MB check looser locally but core.ts has 4MB)
-        const maxSize = 4 * 1024 * 1024; // 4MB
+        // Validate file size (max 20MB)
+        const maxSize = 20 * 1024 * 1024; // 20MB
         if (file.size > maxSize) {
-            toast.error('Dosya boyutu 4MB\'dan büyük olamaz.');
+            toast.error('Dosya boyutu 20MB\'dan büyük olamaz.');
             return;
         }
 
@@ -96,7 +100,8 @@ export function ImageUploadWithCrop({
         try {
             // croppedImageUrl is likely a blob URL or base64. 
             // We need to convert it to a File object for UploadThing.
-            const file = await getFileFromUrl(croppedImageUrl, "upload.png");
+            const name = fileName || "upload.png";
+            const file = await getFileFromUrl(croppedImageUrl, name);
 
             await startUpload([file]);
         } catch (error) {
@@ -187,7 +192,7 @@ export function ImageUploadWithCrop({
                                     <ImageIcon className="h-5 w-5 text-gold" />
                                 </div>
                                 <span className="text-xs text-muted-foreground">
-                                    {aspectRatio === '1:1' ? '1:1 Oran' : '16:9 Oran'}
+                                    {aspectRatio === '1:1' ? '1:1 Oran' : aspectRatio === '21:9' ? '21:9 Oran' : '16:9 Oran'}
                                 </span>
                                 <span className="text-xs font-medium text-gold">Görsel Yükle</span>
                             </>

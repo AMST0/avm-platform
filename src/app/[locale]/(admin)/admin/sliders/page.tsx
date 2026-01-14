@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLocale } from 'next-intl';
-import { getSliders } from '@/lib/data';
+import { getAllSlidersAction, createSliderAction, updateSliderAction, deleteSliderAction, updateSliderOrderAction } from '@/lib/actions/slider.actions';
 import { useSliderOrderStore } from '@/lib/store';
 import type { Slider, Locale } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,14 +19,48 @@ import {
     Pencil,
     Trash2,
     Image as ImageIcon,
-    ExternalLink
+    ExternalLink,
+    Loader2
 } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ImageUploadWithCrop } from '@/components/admin/image-upload';
+
+const LANGUAGES = [
+    { code: 'tr', label: 'Türkçe' },
+    { code: 'en', label: 'English' },
+    { code: 'ru', label: 'Русский' },
+    { code: 'ar', label: 'العربية' },
+];
 
 export default function AdminSlidersPage() {
     const locale = useLocale() as Locale;
     const [sliders, setSliders] = useState<Slider[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const { orderedIds, setOrderedIds, getOrderedSliders } = useSliderOrderStore();
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [editingSlider, setEditingSlider] = useState<Slider | null>(null);
+
+    // Form State
+    const [formData, setFormData] = useState({
+        title: { tr: '', en: '', ru: '', ar: '' },
+        subtitle: { tr: '', en: '', ru: '', ar: '' },
+        image: '',
+        mobileImage: '',
+        link: '',
+        isActive: true,
+    });
+
+    const { getOrderedSliders } = useSliderOrderStore();
 
     useEffect(() => {
         fetchSliders();
@@ -34,24 +68,107 @@ export default function AdminSlidersPage() {
 
     const fetchSliders = async () => {
         setIsLoading(true);
-        const data = await getSliders();
-        // Apply persisted order or fallback to default order
-        const orderedData = getOrderedSliders(data);
-        setSliders(orderedData);
+        const result = await getAllSlidersAction();
+        if (result.success && result.data) {
+            const orderedData = getOrderedSliders(result.data);
+            setSliders(orderedData);
+        }
         setIsLoading(false);
     };
 
+    const handleOpenDialog = (slider?: Slider) => {
+        if (!slider && sliders.length >= 5) {
+            toast.error('En fazla 5 adet slider ekleyebilirsiniz.');
+            return;
+        }
+
+        if (slider) {
+            setEditingSlider(slider);
+            setFormData({
+                title: slider.title,
+                subtitle: slider.subtitle || { tr: '', en: '', ru: '', ar: '' },
+                image: slider.image,
+                mobileImage: slider.mobileImage || '',
+                link: slider.link || '',
+                isActive: slider.isActive,
+            });
+        } else {
+            setEditingSlider(null);
+            setFormData({
+                title: { tr: '', en: '', ru: '', ar: '' },
+                subtitle: { tr: '', en: '', ru: '', ar: '' },
+                image: '',
+                mobileImage: '',
+                link: '',
+                isActive: true,
+            });
+        }
+        setIsDialogOpen(true);
+    };
+
+    const handleSave = async () => {
+        if (!formData.title.tr || !formData.image) {
+            toast.error('Lütfen zorunlu alanları (Türkçe Başlık ve Görsel) doldurun');
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            if (editingSlider) {
+                const result = await updateSliderAction(editingSlider.id, formData);
+                if (result.success) {
+                    toast.success('Slider güncellendi');
+                    fetchSliders();
+                    setIsDialogOpen(false);
+                } else {
+                    toast.error(result.error);
+                }
+            } else {
+                if (sliders.length >= 5) {
+                    toast.error('En fazla 5 adet slider ekleyebilirsiniz.');
+                    setIsSaving(false);
+                    return;
+                }
+                const result = await createSliderAction({
+                    ...formData,
+                    order: sliders.length,
+                } as any);
+                if (result.success) {
+                    toast.success('Slider oluşturuldu');
+                    fetchSliders();
+                    setIsDialogOpen(false);
+                } else {
+                    toast.error(result.error);
+                }
+            }
+        } catch (error) {
+            toast.error('Bir hata oluştu');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     const handleToggleActive = async (id: string, isActive: boolean) => {
-        setSliders((prev) =>
-            prev.map((s) => (s.id === id ? { ...s, isActive } : s))
-        );
-        toast.success(isActive ? 'Slider aktif edildi' : 'Slider pasif edildi');
+        const result = await updateSliderAction(id, { isActive });
+        if (result.success) {
+            setSliders((prev) =>
+                prev.map((s) => (s.id === id ? { ...s, isActive } : s))
+            );
+            toast.success(isActive ? 'Slider aktif edildi' : 'Slider pasif edildi');
+        } else {
+            toast.error('Durum güncellenemedi');
+        }
     };
 
     const handleDelete = async (id: string) => {
         if (!confirm('Bu slider\'ı silmek istediğinize emin misiniz?')) return;
-        setSliders((prev) => prev.filter((s) => s.id !== id));
-        toast.success('Slider silindi');
+        const result = await deleteSliderAction(id);
+        if (result.success) {
+            setSliders((prev) => prev.filter((s) => s.id !== id));
+            toast.success('Slider silindi');
+        } else {
+            toast.error('Slider silinemedi');
+        }
     };
 
     return (
@@ -64,7 +181,10 @@ export default function AdminSlidersPage() {
                         Ana sayfa slider&apos;larını yönetin ve sıralayın
                     </p>
                 </div>
-                <Button className="bg-gold hover:bg-gold-light text-black">
+                <Button
+                    className="bg-gold hover:bg-gold-light text-black font-bold"
+                    onClick={() => handleOpenDialog()}
+                >
                     <Plus className="h-4 w-4 me-2" />
                     Yeni Slider
                 </Button>
@@ -126,10 +246,11 @@ export default function AdminSlidersPage() {
 
                     {isLoading ? (
                         <div className="text-center py-12 text-muted-foreground">
+                            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2 text-gold" />
                             Yükleniyor...
                         </div>
                     ) : sliders.length === 0 ? (
-                        <div className="text-center py-12 text-muted-foreground">
+                        <div className="text-center py-12 text-muted-foreground bg-muted/20 rounded-2xl border-2 border-dashed border-border/50">
                             <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
                             <p>Henüz slider eklenmemiş.</p>
                         </div>
@@ -146,7 +267,7 @@ export default function AdminSlidersPage() {
                                     </button>
 
                                     {/* Image Preview */}
-                                    <div className="w-24 h-14 rounded-lg overflow-hidden bg-muted shrink-0 shadow-sm">
+                                    <div className="w-24 h-14 rounded-lg overflow-hidden bg-muted shrink-0 shadow-sm border border-border/50">
                                         {slider.image ? (
                                             <img
                                                 src={slider.image}
@@ -163,10 +284,10 @@ export default function AdminSlidersPage() {
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
-                                            <h4 className="font-medium truncate">{slider.title[locale]}</h4>
+                                            <h4 className="font-bold truncate">{slider.title[locale]}</h4>
                                             <Badge
                                                 variant={slider.isActive ? 'default' : 'secondary'}
-                                                className={slider.isActive ? 'bg-emerald-500' : ''}
+                                                className={slider.isActive ? 'bg-emerald-500 hover:bg-emerald-600' : ''}
                                             >
                                                 {slider.isActive ? 'Aktif' : 'Pasif'}
                                             </Badge>
@@ -184,18 +305,18 @@ export default function AdminSlidersPage() {
                                         )}
                                     </div>
 
-                                    {/* Order Badge */}
-                                    <Badge variant="outline" className="shrink-0 font-mono">
-                                        #{index + 1}
-                                    </Badge>
-
                                     {/* Actions */}
                                     <div className="flex items-center gap-2 shrink-0">
                                         <Switch
                                             checked={slider.isActive}
                                             onCheckedChange={(checked) => handleToggleActive(slider.id, checked)}
                                         />
-                                        <Button variant="ghost" size="icon" className="hover:bg-accent">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="hover:bg-gold/10 hover:text-gold"
+                                            onClick={() => handleOpenDialog(slider)}
+                                        >
                                             <Pencil className="h-4 w-4" />
                                         </Button>
                                         <Button
@@ -213,6 +334,102 @@ export default function AdminSlidersPage() {
                     )}
                 </CardContent>
             </Card>
+
+            {/* Slider Form Dialog */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>
+                            {editingSlider ? 'Slider Güncelle' : 'Yeni Slider Ekle'}
+                        </DialogTitle>
+                        <DialogDescription>
+                            Ana sayfa slider alanı için görsel ve metinleri girin. En fazla 5 slider ekleyebilirsiniz. 16:9 görsel önerilir.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="grid gap-6 py-4">
+                        {/* Image Upload */}
+                        <ImageUploadWithCrop
+                            label="Slider Görseli (16:9)*"
+                            value={formData.image}
+                            onChange={(val) => setFormData(prev => ({ ...prev, image: val }))}
+                            aspectRatio="16:9"
+                            hint="Ana görsel (Desktop için 16:9 zorunlu)"
+                        />
+
+                        {/* Language Tabs */}
+                        <Tabs defaultValue="tr" className="w-full">
+                            <TabsList className="grid grid-cols-4 w-full">
+                                {LANGUAGES.map(lang => (
+                                    <TabsTrigger key={lang.code} value={lang.code}>
+                                        {lang.label}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                            {LANGUAGES.map(lang => (
+                                <TabsContent key={lang.code} value={lang.code} className="space-y-4 pt-4">
+                                    <div className="space-y-2">
+                                        <Label>Başlık ({lang.label}){lang.code === 'tr' && '*'}</Label>
+                                        <Input
+                                            value={formData.title[lang.code as keyof typeof formData.title]}
+                                            onChange={(e) => setFormData(prev => ({
+                                                ...prev,
+                                                title: { ...prev.title, [lang.code]: e.target.value }
+                                            }))}
+                                            placeholder={`${lang.label} başlık girin...`}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Alt Başlık ({lang.label})</Label>
+                                        <Input
+                                            value={formData.subtitle[lang.code as keyof typeof formData.subtitle]}
+                                            onChange={(e) => setFormData(prev => ({
+                                                ...prev,
+                                                subtitle: { ...prev.subtitle, [lang.code]: e.target.value }
+                                            }))}
+                                            placeholder={`${lang.label} alt başlık girin...`}
+                                        />
+                                    </div>
+                                </TabsContent>
+                            ))}
+                        </Tabs>
+
+                        {/* Link */}
+                        <div className="space-y-2">
+                            <Label>Yönlendirme Linki (Opsiyonel)</Label>
+                            <Input
+                                value={formData.link}
+                                onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
+                                placeholder="Örn: /shops veya https://..."
+                            />
+                        </div>
+
+                        {/* Status */}
+                        <div className="flex items-center gap-2">
+                            <Switch
+                                checked={formData.isActive}
+                                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
+                                id="active-slider"
+                            />
+                            <Label htmlFor="active-slider">Slider Aktif</Label>
+                        </div>
+                    </div>
+
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>
+                            İptal
+                        </Button>
+                        <Button
+                            className="bg-gold hover:bg-gold-light text-black font-bold"
+                            onClick={handleSave}
+                            disabled={isSaving}
+                        >
+                            {isSaving && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
+                            {editingSlider ? 'Güncelle' : 'Oluştur'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

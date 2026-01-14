@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { shopSchema, type ShopFormData, type ShopInput } from '@/lib/schemas';
 import { CATEGORY_LABELS, FLOOR_LABELS, type ShopCategory, type Locale } from '@/lib/types';
 import { ImageUploadWithCrop } from './image-upload';
@@ -57,12 +57,11 @@ const floors = [-1, 0, 1, 2, 3, 4];
 
 export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
     const t = useTranslations('admin');
-    const locale = useLocale() as Locale;
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<ShopFormData>({
-        resolver: zodResolver(shopSchema),
-        defaultValues: initialData || {
+        resolver: zodResolver(shopSchema) as any,
+        defaultValues: (initialData as any) || {
             name: '',
             slug: '',
             category: 'fashion',
@@ -70,7 +69,6 @@ export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
             logo: '',
             phone: '',
             website: '',
-            workingHours: '',
             featured: false,
             isActive: true,
         },
@@ -91,15 +89,15 @@ export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
 
     // Generate shop URL for QR
     const shopUrl = shopSlug
-        ? `${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}/shops/${shopSlug}`
+        ? `${typeof window !== 'undefined' ? window.location.origin : ''}/tr/shops/${shopSlug}`
         : '';
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    {/* Main Content - 2 Columns */}
-                    <div className="lg:col-span-2 space-y-6">
+                <div className="space-y-6">
+                    {/* Main Content */}
+                    <div className="space-y-6">
 
                         {/* Basic Info Card */}
                         <Card>
@@ -110,38 +108,32 @@ export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="name"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Mağaza Adı *</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Örn: Zara" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Mağaza Adı *</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Örn: Zara"
+                                                    {...field}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        // Auto-generate slug
+                                                        const slug = e.target.value
+                                                            .toLowerCase()
+                                                            .replace(/[^a-z0-9]+/g, '-')
+                                                            .replace(/(^-|-$)+/g, '');
+                                                        form.setValue('slug', slug);
+                                                    }}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                                    <FormField
-                                        control={form.control}
-                                        name="slug"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>URL Slug *</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Örn: zara" {...field} />
-                                                </FormControl>
-                                                <FormDescription>
-                                                    Sadece küçük harf, rakam ve tire
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
@@ -159,7 +151,7 @@ export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
                                                     <SelectContent>
                                                         {categories.map((cat) => (
                                                             <SelectItem key={cat} value={cat}>
-                                                                {CATEGORY_LABELS[cat][locale]}
+                                                                {CATEGORY_LABELS[cat]['tr']}
                                                             </SelectItem>
                                                         ))}
                                                     </SelectContent>
@@ -187,7 +179,7 @@ export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
                                                     <SelectContent>
                                                         {floors.map((floor) => (
                                                             <SelectItem key={floor} value={floor.toString()}>
-                                                                {FLOOR_LABELS[floor]?.[locale] || `${floor}. Kat`}
+                                                                {FLOOR_LABELS[floor]?.['tr'] || `${floor}. Kat`}
                                                             </SelectItem>
                                                         ))}
                                                     </SelectContent>
@@ -198,7 +190,7 @@ export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
                                         control={form.control}
                                         name="phone"
@@ -227,125 +219,75 @@ export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
                                         )}
                                     />
 
+                                </div>
+
+                                {/* Status Fields */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                                     <FormField
                                         control={form.control}
-                                        name="workingHours"
+                                        name="isActive"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
+                                                <div className="space-y-0.5">
+                                                    <FormLabel>Aktif Durum</FormLabel>
+                                                    <FormDescription>
+                                                        Mağaza sitede görünür
+                                                    </FormDescription>
+                                                </div>
+                                                <FormControl>
+                                                    <Switch
+                                                        checked={field.value}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="featured"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
+                                                <div className="space-y-0.5">
+                                                    <FormLabel>Öne Çıkan</FormLabel>
+                                                    <FormDescription>
+                                                        Ana sayfada vitrine çıkar
+                                                    </FormDescription>
+                                                </div>
+                                                <FormControl>
+                                                    <Switch
+                                                        checked={field.value}
+                                                        onCheckedChange={field.onChange}
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
+                                {/* Logo Upload */}
+                                <div className="space-y-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="logo"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Çalışma Saatleri</FormLabel>
+                                                <FormLabel>Mağaza Logosu *</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="10:00 - 22:00" {...field} />
+                                                    <ImageUploadWithCrop
+                                                        value={field.value}
+                                                        onChange={field.onChange}
+                                                        aspectRatio="1:1"
+                                                        label="Logo Seçin"
+                                                        fileName={`${form.getValues('slug') || 'magaza'}-${new Date().toISOString().split('T')[0]}.png`}
+                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
                                 </div>
-                            </CardContent>
-                        </Card>
 
-                        {/* Description and SEO cards removed */}
-                    </div>
-
-                    {/* Sidebar - 2 Columns */}
-                    <div className="lg:col-span-2 space-y-6">
-
-                        {/* Images Card */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <ImageIcon className="h-5 w-5" />
-                                    Görseller
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <FormField
-                                    control={form.control}
-                                    name="logo"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <ImageUploadWithCrop
-                                                value={field.value}
-                                                onChange={field.onChange}
-                                                aspectRatio="1:1"
-                                                label="Logo *"
-                                                hint="Kare format (1:1)"
-                                                error={form.formState.errors.logo?.message}
-                                            />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                {/* Banner upload removed */}
-                            </CardContent>
-                        </Card>
-
-                        {/* Status Card */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Star className="h-5 w-5" />
-                                    Durum
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="isActive"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 gap-3">
-                                            <div className="flex-1 min-w-0">
-                                                <FormLabel className="text-sm font-medium">Aktif</FormLabel>
-                                                <FormDescription className="text-xs">
-                                                    Sitede görünür
-                                                </FormDescription>
-                                            </div>
-                                            <FormControl>
-                                                <Switch
-                                                    checked={field.value}
-                                                    onCheckedChange={field.onChange}
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="featured"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 gap-3">
-                                            <div className="flex-1 min-w-0">
-                                                <FormLabel className="text-sm font-medium">Öne Çıkan</FormLabel>
-                                                <FormDescription className="text-xs">
-                                                    Ana sayfada göster
-                                                </FormDescription>
-                                            </div>
-                                            <FormControl>
-                                                <Switch
-                                                    checked={field.value}
-                                                    onCheckedChange={field.onChange}
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                            </CardContent>
-                        </Card>
-
-                        {/* QR Code Card */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <QrCode className="h-5 w-5" />
-                                    QR Kod
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <QRCodeGenerator
-                                    url={shopUrl}
-                                    shopName={form.watch('name') || 'shop'}
-                                />
                             </CardContent>
                         </Card>
                     </div>
@@ -366,6 +308,6 @@ export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
                     </Button>
                 </div>
             </form>
-        </Form>
+        </Form >
     );
 }

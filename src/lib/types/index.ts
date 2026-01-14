@@ -29,9 +29,11 @@ export interface Shop {
   category: ShopCategory;
   floor: number;
   logo: string;
+  banner?: string;
+  description: LocalizedString;
+  workingHours?: string;
   phone?: string;
   website?: string;
-  workingHours?: string;
   featured: boolean;
   isActive: boolean;
   createdAt: Date;
@@ -114,3 +116,59 @@ export const FLOOR_LABELS: Record<number, LocalizedString> = {
   3: { tr: '3. Kat', en: '3rd Floor', ru: '3-й этаж', ar: 'الطابق الثالث' },
   4: { tr: '4. Kat', en: '4th Floor', ru: '4-й этаж', ar: 'الطابق الرابع' },
 };
+
+// ==========================================
+// Input Types for Repositories
+// ==========================================
+
+export interface ShopInput {
+  name: string;
+  slug: string;
+  category: ShopCategory;
+  floor: number;
+  logo: string;
+  banner?: string;
+  description: LocalizedString;
+  workingHours?: string;
+  phone?: string;
+  website?: string;
+  featured?: boolean;
+  isActive?: boolean;
+}
+
+export interface ShopFilters {
+  category?: ShopCategory;
+  floor?: number;
+  search?: string;
+  featured?: boolean;
+  isActive?: boolean;
+}
+
+export interface EventInput {
+  title: LocalizedString;
+  slug: string;
+  description: LocalizedString;
+  image: string;
+  startDate: Date;
+  endDate: Date;
+  location: string;
+  isActive?: boolean;
+}
+
+export interface SliderInput {
+  title: LocalizedString;
+  subtitle?: LocalizedString;
+  image: string;
+  mobileImage?: string;
+  link?: string;
+  order: number;
+  isActive?: boolean;
+}
+
+export interface PopupInput {
+  title: LocalizedString;
+  image: string;
+  link?: string;
+  frequency: 'once' | 'always';
+  isActive?: boolean;
+}

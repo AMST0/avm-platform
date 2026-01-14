@@ -45,40 +45,46 @@ export default async function ShopDetailPage({ params }: ShopDetailPageProps) {
             <Header />
 
             <main className="min-h-screen pt-20 pb-16 bg-background">
-                {/* Banner/Hero Section */}
-                <section className="relative h-[300px] md:h-[400px] luxury-gradient overflow-hidden">
+                {/* Premium Banner/Hero Section */}
+                <section className="relative h-[300px] md:h-[450px] flex items-center overflow-hidden bg-navy">
                     {shop.banner ? (
                         <img
                             src={shop.banner}
                             alt={shop.name}
-                            className="absolute inset-0 w-full h-full object-cover opacity-30"
+                            className="absolute inset-0 w-full h-full object-cover opacity-40"
                         />
-                    ) : null}
+                    ) : (
+                        <img
+                            src="/luxury_shops_hero_bg_1768398513889.png"
+                            className="absolute inset-0 w-full h-full object-cover opacity-20"
+                            alt="Default Banner"
+                        />
+                    )}
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
 
-                    <div className="container mx-auto px-4 h-full flex items-end pb-8 relative z-10">
-                        <div className="flex items-end gap-6">
-                            {/* Logo */}
-                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-white shadow-xl flex items-center justify-center overflow-hidden border-4 border-background">
+                    <div className="container mx-auto px-4 relative z-10 h-full flex items-end pb-12">
+                        <div className="flex flex-col md:flex-row items-center md:items-end gap-8 w-full">
+                            {/* Premium Logo Frame */}
+                            <div className="w-32 h-32 md:w-44 md:h-44 rounded-[2.5rem] bg-white shadow-2xl flex items-center justify-center overflow-hidden border-8 border-white/10 backdrop-blur-sm p-4">
                                 {shop.logo ? (
-                                    <img src={shop.logo} alt={shop.name} className="w-full h-full object-cover" />
+                                    <img src={shop.logo} alt={shop.name} className="w-full h-full object-contain" />
                                 ) : (
-                                    <Store className="h-12 w-12 text-gold" />
+                                    <Store className="h-20 w-20 text-gold" />
                                 )}
                             </div>
 
-                            <div className="pb-2">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Badge className="bg-gold text-black">
+                            <div className="flex-1 text-center md:text-left space-y-4">
+                                <div className="flex flex-wrap justify-center md:justify-start items-center gap-3">
+                                    <Badge className="bg-gold text-black font-black uppercase tracking-widest text-[10px] px-3 py-1">
                                         {CATEGORY_LABELS[shop.category]?.[locale as Locale] || shop.category}
                                     </Badge>
-                                    <Badge variant="outline" className="bg-white/10 backdrop-blur-md text-white border-white/20">
-                                        <MapPin className="h-3 w-3 me-1" />
+                                    <Badge variant="outline" className="bg-white/10 backdrop-blur-md text-white border-white/20 font-bold">
+                                        <MapPin className="h-3.5 w-3.5 me-1.5" />
                                         {FLOOR_LABELS[shop.floor]?.[locale as Locale] || `${shop.floor}. Kat`}
                                     </Badge>
                                 </div>
-                                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                                <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter">
                                     {shop.name}
                                 </h1>
                             </div>

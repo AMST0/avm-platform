@@ -4,6 +4,7 @@
         "shops": "Mağazalar",
         "events": "Etkinlikler",
         "contact": "İletişim",
+        "leasing": "Kiralama",
         "search": "Ara...",
         "searchPlaceholder": "Mağaza veya etkinlik ara...",
         "allCategories": "Tüm Kategoriler",
@@ -18,7 +19,8 @@
         "delete": "Sil",
         "edit": "Düzenle",
         "add": "Ekle",
-        "language": "Dil"
+        "language": "Dil",
+        "links": "Hızlı Erişim"
     },
     "hero": {
         "welcome": "Hoş Geldiniz",
@@ -57,19 +59,25 @@
         "subscribe": "Abone Ol",
         "copyright": "© 2024 AVM Platform. Tüm hakları saklıdır.",
         "digitalArchitecture": "Digital Architecture by",
-        "poweredBy": "AMST"
+        "poweredBy": "AMST",
+        "legal": "Yasal",
+        "cookies": "Çerez Aydınlatma Metni",
+        "kvkk": "KVKK Aydınlatma Metni",
+        "terms": "Kullanım Koşulları"
     },
     "admin": {
         "dashboard": "Kontrol Paneli",
         "shops": "Mağazalar",
         "events": "Etkinlikler",
         "sliders": "Slider Yönetimi",
-        "popups": "Popup Yönetimi",
+        "popups": "Pop-up Yönetimi",
+        "inquiries": "Mesajlar & Başvurular",
         "settings": "Ayarlar",
         "logout": "Çıkış",
         "addNew": "Yeni Ekle",
         "editItem": "Düzenle",
         "deleteConfirm": "Silmek istediğinize emin misiniz?",
+        "save": "Kaydet",
         "saveSuccess": "Başarıyla kaydedildi",
         "deleteSuccess": "Başarıyla silindi",
         "formValidation": {
@@ -105,6 +113,10 @@
         "cosmetics": "Kozmetik",
         "services": "Hizmetler"
     },
+    "about": {
+        "title": "Hakkımızda",
+        "description": "20 yılı aşkın tecrübemizle alışveriş ve yaşamın kalbi."
+    },
     "floors": {
         "basement": "Bodrum Kat",
         "ground": "Zemin Kat",
@@ -112,5 +124,33 @@
         "second": "2. Kat",
         "third": "3. Kat",
         "fourth": "4. Kat"
+    },
+    "leasing": {
+        "title": "Kiralama Başvurusu",
+        "subtitle": "İşinizi geleceğe taşıyın. Modern mağaza alanlarımızda yerinizi alın.",
+        "whyUsTitle": "Neden AVM Platform?",
+        "whyUs1Title": "Yüksek Trafik",
+        "whyUs1Desc": "Günlük binlerce ziyaretçi ile markanızın görünürlüğünü artırın.",
+        "whyUs2Title": "Modern Altyapı",
+        "whyUs2Desc": "En son teknoloji ve güvenlik sistemleri ile donatılmış mağazalar.",
+        "whyUs3Title": "Stratejik Konum",
+        "whyUs3Desc": "Şehrin en canlı bölgesinde, kolay ulaşılabilir lokasyon.",
+        "formTitle": "Kiralama Talep Formu",
+        "formSubtitle": "Detaylı bilgi ve randevu için formu doldurmanız yeterli.",
+        "sectionStore": "MAĞAZA BİLGİLERİ",
+        "sectionContact": "YETKİLİ KİŞİ İLETİŞİM BİLGİLERİ",
+        "firmTitle": "Firma Ünvanı",
+        "brand": "Marka",
+        "minM2": "Min. m²",
+        "maxM2": "Max. m²",
+        "nameSurname": "Ad Soyad",
+        "titleLabel": "Ünvan",
+        "email": "Email Adresi",
+        "phone": "Cep Telefonu",
+        "message": "Mesaj",
+        "kvkk": "KVKK Aydınlatma Metni'ni okuduğumu, anladığımı kabul ve beyan ederim.",
+        "marketing": "Bu formu göndererek AVM Platform tarafından reklam, ilan, kampanya ve faaliyetleri hakkında tarafımla iletişime geçilmesine 6563 Sayılı Kanun uyarınca onay veriyorum.",
+        "submit": "GÖNDER",
+        "formSuccess": "Başvurunuz başarıyla alındı. En kısa sürede sizinle iletişime geçeceğiz."
     }
 }

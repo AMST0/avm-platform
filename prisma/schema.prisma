@@ -9,6 +9,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ==========================================
@@ -23,7 +24,7 @@ model Shop {
   logo         String   // UploadThing URL
   phone        String?
   website      String?
-  workingHours String?
+
   featured     Boolean  @default(false)
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
@@ -88,6 +89,26 @@ model Popup {
   link      String?
   frequency String   @default("once") // once | always
   isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+// ==========================================
+// Inquiry - Contact and Leasing submissions
+// ==========================================
+model Inquiry {
+  id        String   @id @default(uuid())
+  type      String   // contact | leasing
+  
+  // Common Fields
+  name      String
+  email     String
+  phone     String
+  message   String?
+  
+  // Detail Fields (JSON for flexibility)
+  details   Json?    // stores leasing specific data like brand, size etc.
+  
+  status    String   @default("pending") // pending | read | archived
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

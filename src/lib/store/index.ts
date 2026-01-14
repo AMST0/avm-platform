@@ -5,7 +5,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Locale } from '@/i18n/routing';
-import type { ShopCategory } from '@/lib/types';
+import type { Shop, ShopCategory } from '@/lib/types';
 
 // ==========================================
 // Filter Store (Shop Filters)
@@ -127,3 +127,19 @@ export const useSliderOrderStore = create<SliderOrderState>()(
         }
     )
 );
+// ==========================================
+// Shop Popup Store (Global Popup)
+// ==========================================
+interface ShopPopupState {
+    shop: Shop | null;
+    isOpen: boolean;
+    open: (shop: Shop) => void;
+    close: () => void;
+}
+
+export const useShopPopupStore = create<ShopPopupState>((set) => ({
+    shop: null,
+    isOpen: false,
+    open: (shop) => set({ shop, isOpen: true }),
+    close: () => set({ shop: null, isOpen: false }),
+}));

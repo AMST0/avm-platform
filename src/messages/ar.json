@@ -2,6 +2,7 @@
     "common": {
         "home": "الرئيسية",
         "shops": "المتاجر",
+        "leasing": "تأجير",
         "events": "الفعاليات",
         "contact": "اتصل بنا",
         "search": "بحث...",
@@ -18,7 +19,8 @@
         "delete": "حذف",
         "edit": "تعديل",
         "add": "إضافة",
-        "language": "اللغة"
+        "language": "اللغة",
+        "links": "وصول سريع"
     },
     "hero": {
         "welcome": "أهلاً بكم",
@@ -70,6 +72,7 @@
         "addNew": "إضافة جديد",
         "editItem": "تعديل",
         "deleteConfirm": "هل أنت متأكد أنك تريد الحذف؟",
+        "save": "حفظ",
         "saveSuccess": "تم الحفظ بنجاح",
         "deleteSuccess": "تم الحذف بنجاح",
         "formValidation": {
@@ -104,6 +107,10 @@
         "sports": "رياضة",
         "cosmetics": "مستحضرات تجميل",
         "services": "خدمات"
+    },
+    "about": {
+        "title": "من نحن",
+        "description": "قلب التسوق ونمط الحياة مع أكثر من 20 عاماً من الخبرة."
     },
     "floors": {
         "basement": "الطابق السفلي",

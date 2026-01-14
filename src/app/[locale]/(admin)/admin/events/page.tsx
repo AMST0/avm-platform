@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useLocale } from 'next-intl';
-import { getUpcomingEvents, getPastEvents } from '@/lib/data';
 import type { Event, Locale } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,9 +39,48 @@ import {
     Trash2,
     Calendar,
     Clock,
-    MapPin
+    MapPin,
+    AlertCircle,
+    Info,
+    Link as LinkIcon
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { ImageUploadWithCrop } from '@/components/admin/image-upload';
+import {
+    createEventAction,
+    updateEventAction,
+    deleteEventAction,
+    getEventsAction,
+    getUpcomingEventsAction,
+    getPastEventsAction
+} from '@/lib/actions/event.actions';
+import {
+    Alert,
+    AlertDescription,
+    AlertTitle,
+} from "@/components/ui/alert";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+// Slugify utility for Turkish support
+const slugify = (text: string) => {
+    const trMap: Record<string, string> = {
+        'ç': 'c', 'Ç': 'C', 'ğ': 'g', 'Ğ': 'G', 'ı': 'i', 'İ': 'I',
+        'ö': 'o', 'Ö': 'O', 'ş': 's', 'Ş': 'S', 'ü': 'u', 'Ü': 'U'
+    };
+    for (let key in trMap) {
+        text = text.replace(new RegExp(key, 'g'), trMap[key]);
+    }
+    return text.toLowerCase()
+        .replace(/[^-a-zA-Z0-9\s]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+};
 
 export default function AdminEventsPage() {
     const locale = useLocale() as Locale;
@@ -71,16 +109,29 @@ export default function AdminEventsPage() {
 
     const fetchEvents = async () => {
         setIsLoading(true);
-        const [upcoming, past] = await Promise.all([
-            getUpcomingEvents(),
-            getPastEvents(),
-        ]);
-        setUpcomingEvents(upcoming);
-        setPastEvents(past);
-        setIsLoading(false);
+        try {
+            const [upcoming, past] = await Promise.all([
+                getUpcomingEventsAction(),
+                getPastEventsAction(),
+            ]);
+            setUpcomingEvents(upcoming);
+            setPastEvents(past);
+        } catch (error) {
+            console.error('Fetch error:', error);
+            toast.error('Etkinlikler yüklenirken hata oluştu');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
+    const totalEventCount = upcomingEvents.length + pastEvents.length;
+    const isLimitReached = totalEventCount >= 20;
+
     const handleAddNew = () => {
+        if (isLimitReached) {
+            toast.error('Maksimum 20 etkinlik sınırına ulaştınız.');
+            return;
+        }
         setEditingEvent(null);
         setFormData({
             title: { tr: '', en: '', ru: '', ar: '' },
@@ -111,23 +162,46 @@ export default function AdminEventsPage() {
     };
 
     const handleDelete = async (eventId: string) => {
-        setUpcomingEvents((prev) => prev.filter((e) => e.id !== eventId));
-        setPastEvents((prev) => prev.filter((e) => e.id !== eventId));
-        toast.success('Etkinlik silindi');
+        if (!confirm('Bu etkinliği silmek istediğinizden emin misiniz?')) return;
+
+        try {
+            await deleteEventAction(eventId);
+            toast.success('Etkinlik silindi');
+            fetchEvents();
+        } catch (error) {
+            toast.error('Etkinlik silinirken hata oluştu');
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (editingEvent) {
-            toast.success('Etkinlik güncellendi');
-        } else {
-            toast.success('Etkinlik oluşturuldu');
+        if (!formData.title.tr || !formData.description.tr) {
+            toast.error('Türkçe başlık ve açıklama zorunludur.');
+            return;
         }
 
-        setIsFormOpen(false);
-        setEditingEvent(null);
-        fetchEvents();
+        const dataToSave = {
+            ...formData,
+            startDate: new Date(formData.startDate),
+            endDate: new Date(formData.endDate),
+        };
+
+        try {
+            if (editingEvent) {
+                await updateEventAction(editingEvent.id, dataToSave);
+                toast.success('Etkinlik güncellendi');
+            } else {
+                await createEventAction(dataToSave);
+                toast.success('Etkinlik oluşturuldu');
+            }
+
+            setIsFormOpen(false);
+            setEditingEvent(null);
+            fetchEvents();
+        } catch (error: any) {
+            toast.error(error.message || 'Bir hata oluştu');
+        }
     };
 
     const EventTable = ({ events, title }: { events: Event[]; title: string }) => (
@@ -233,11 +307,25 @@ export default function AdminEventsPage() {
                         AVM etkinliklerini yönetin
                     </p>
                 </div>
-                <Button onClick={handleAddNew} className="bg-gold hover:bg-gold-light text-black">
+                <Button
+                    onClick={handleAddNew}
+                    className="bg-gold hover:bg-gold-light text-black"
+                    disabled={isLimitReached}
+                >
                     <Plus className="h-4 w-4 me-2" />
-                    Yeni Etkinlik
+                    Yeni Etkinlik {isLimitReached && '(Limit Doldu)'}
                 </Button>
             </div>
+
+            {isLimitReached && (
+                <Alert variant="destructive" className="bg-red-500/10 border-red-500/30 text-red-500">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Uyarı</AlertTitle>
+                    <AlertDescription>
+                        Maksimum 20 etkinlik sınırına ulaştınız. Yeni bir etkinlik eklemek için lütfen eski etkinliklerden birini silin.
+                    </AlertDescription>
+                </Alert>
+            )}
 
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -309,22 +397,32 @@ export default function AdminEventsPage() {
                             </TabsList>
 
                             {(['tr', 'en', 'ru', 'ar'] as const).map((lang) => (
-                                <TabsContent key={lang} value={lang} className="space-y-4">
+                                <TabsContent key={lang} value={lang} className="space-y-4 pt-2">
+                                    {lang !== 'tr' && (
+                                        <div className="flex items-center gap-2 p-2 rounded-lg bg-blue-500/5 border border-blue-500/10 text-[10px] text-blue-400">
+                                            <Info className="h-3 w-3" />
+                                            Bu alanı boş bırakırsanız Türkçe içerik otomatik olarak kopyalanacaktır.
+                                        </div>
+                                    )}
                                     <div className="space-y-2">
-                                        <Label>Başlık ({lang.toUpperCase()})</Label>
+                                        <Label>Başlık ({lang.toUpperCase()}) {lang === 'tr' && <span className="text-red-500">*</span>}</Label>
                                         <Input
                                             value={formData.title[lang]}
-                                            onChange={(e) =>
+                                            onChange={(e) => {
+                                                const val = e.target.value;
                                                 setFormData((prev) => ({
                                                     ...prev,
-                                                    title: { ...prev.title, [lang]: e.target.value },
-                                                }))
-                                            }
-                                            required
+                                                    title: { ...prev.title, [lang]: val },
+                                                    // Auto-generate slug from TR title if not editing an existing event
+                                                    slug: (lang === 'tr' && !editingEvent) ? slugify(val) : prev.slug
+                                                }));
+                                            }}
+                                            required={lang === 'tr'}
+                                            placeholder={lang === 'tr' ? "Zorunlu alan..." : "Opsiyonel (Boşsa TR kullanılır)"}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label>Açıklama ({lang.toUpperCase()})</Label>
+                                        <Label>Açıklama ({lang.toUpperCase()}) {lang === 'tr' && <span className="text-red-500">*</span>}</Label>
                                         <Textarea
                                             value={formData.description[lang]}
                                             onChange={(e) =>
@@ -333,8 +431,9 @@ export default function AdminEventsPage() {
                                                     description: { ...prev.description, [lang]: e.target.value },
                                                 }))
                                             }
-                                            rows={3}
-                                            required
+                                            rows={2}
+                                            required={lang === 'tr'}
+                                            placeholder={lang === 'tr' ? "Zorunlu alan..." : "Opsiyonel (Boşsa TR kullanılır)"}
                                         />
                                     </div>
                                 </TabsContent>
@@ -343,13 +442,33 @@ export default function AdminEventsPage() {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Slug</Label>
-                                <Input
-                                    value={formData.slug}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
-                                    placeholder="ornek-etkinlik"
-                                    required
-                                />
+                                <div className="flex items-center gap-2">
+                                    <Label>Slug (URL Uzantısı)</Label>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-[300px]">
+                                                <p className="text-xs">
+                                                    Etkinliğin web adresindeki (URL) ismidir.
+                                                    Örneğin: avm.com/events/<b>yaz-festivali</b>.
+                                                    Başlıktan otomatik oluşur.
+                                                </p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
+                                <div className="relative">
+                                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        value={formData.slug}
+                                        onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
+                                        className="pl-9"
+                                        placeholder="yaz-festivali"
+                                        required
+                                    />
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <Label>Konum</Label>
@@ -384,11 +503,12 @@ export default function AdminEventsPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label>Görsel URL</Label>
-                            <Input
+                            <ImageUploadWithCrop
+                                label="Etkinlik Görseli (16:9)"
                                 value={formData.image}
-                                onChange={(e) => setFormData((prev) => ({ ...prev, image: e.target.value }))}
-                                placeholder="https://example.com/image.jpg"
+                                onChange={(val) => setFormData(prev => ({ ...prev, image: val }))}
+                                aspectRatio="16:9"
+                                hint="Maksimum 4MB, 16:9 oranında kırpılacaktır."
                             />
                         </div>
 
