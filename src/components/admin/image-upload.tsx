@@ -63,10 +63,10 @@ export function ImageUploadWithCrop({
             return;
         }
 
-        // Validate file size (max 20MB)
-        const maxSize = 20 * 1024 * 1024; // 20MB
+        // Validate file size (max 4MB for UploadThing free tier mostly, keeping 10MB check looser locally but core.ts has 4MB)
+        const maxSize = 4 * 1024 * 1024; // 4MB
         if (file.size > maxSize) {
-            toast.error('Dosya boyutu 20MB\'dan büyük olamaz.');
+            toast.error('Dosya boyutu 4MB\'dan büyük olamaz.');
             return;
         }
 

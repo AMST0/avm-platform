@@ -77,11 +77,6 @@ export default function AdminSlidersPage() {
     };
 
     const handleOpenDialog = (slider?: Slider) => {
-        if (!slider && sliders.length >= 5) {
-            toast.error('En fazla 5 adet slider ekleyebilirsiniz.');
-            return;
-        }
-
         if (slider) {
             setEditingSlider(slider);
             setFormData({
@@ -124,11 +119,6 @@ export default function AdminSlidersPage() {
                     toast.error(result.error);
                 }
             } else {
-                if (sliders.length >= 5) {
-                    toast.error('En fazla 5 adet slider ekleyebilirsiniz.');
-                    setIsSaving(false);
-                    return;
-                }
                 const result = await createSliderAction({
                     ...formData,
                     order: sliders.length,
@@ -343,18 +333,18 @@ export default function AdminSlidersPage() {
                             {editingSlider ? 'Slider Güncelle' : 'Yeni Slider Ekle'}
                         </DialogTitle>
                         <DialogDescription>
-                            Ana sayfa slider alanı için görsel ve metinleri girin. En fazla 5 slider ekleyebilirsiniz. 16:9 görsel önerilir.
+                            Ana sayfa kahraman (hero) alanı için görsel ve metinleri girin. 21:9 oranında görsel yüklemeniz önerilir.
                         </DialogDescription>
                     </DialogHeader>
 
                     <div className="grid gap-6 py-4">
                         {/* Image Upload */}
                         <ImageUploadWithCrop
-                            label="Slider Görseli (16:9)*"
+                            label="Slider Görseli*"
                             value={formData.image}
                             onChange={(val) => setFormData(prev => ({ ...prev, image: val }))}
-                            aspectRatio="16:9"
-                            hint="Ana görsel (Desktop için 16:9 zorunlu)"
+                            aspectRatio="21:9"
+                            hint="Ana görsel (Desktop için 21:9 önerilir)"
                         />
 
                         {/* Language Tabs */}
