@@ -7,6 +7,7 @@ import type { Slider } from '@/lib/types';
 export const mockSliders: Slider[] = [
     {
         id: '1',
+        slug: 'yaz-kampanyasi-basladi',
         title: {
             tr: 'Yaz Kampanyası Başladı!',
             en: 'Summer Campaign Started!',
@@ -29,6 +30,7 @@ export const mockSliders: Slider[] = [
     },
     {
         id: '2',
+        slug: 'yeni-sezon-koleksiyonlari',
         title: {
             tr: 'Yeni Sezon Koleksiyonları',
             en: 'New Season Collections',
@@ -51,6 +53,7 @@ export const mockSliders: Slider[] = [
     },
     {
         id: '3',
+        slug: 'teknoloji-festivali',
         title: {
             tr: 'Teknoloji Festivali',
             en: 'Technology Festival',
@@ -73,6 +76,7 @@ export const mockSliders: Slider[] = [
     },
     {
         id: '4',
+        slug: 'lezzet-soleni',
         title: {
             tr: 'Lezzet Şöleni',
             en: 'Taste Festival',
