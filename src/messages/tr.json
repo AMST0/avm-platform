@@ -1,0 +1,116 @@
+{
+    "common": {
+        "home": "Ana Sayfa",
+        "shops": "Mağazalar",
+        "events": "Etkinlikler",
+        "contact": "İletişim",
+        "search": "Ara...",
+        "searchPlaceholder": "Mağaza veya etkinlik ara...",
+        "allCategories": "Tüm Kategoriler",
+        "allFloors": "Tüm Katlar",
+        "noResults": "Sonuç bulunamadı",
+        "loading": "Yükleniyor...",
+        "viewDetails": "Detayları Gör",
+        "learnMore": "Daha Fazla",
+        "close": "Kapat",
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "delete": "Sil",
+        "edit": "Düzenle",
+        "add": "Ekle",
+        "language": "Dil"
+    },
+    "hero": {
+        "welcome": "Hoş Geldiniz",
+        "subtitle": "Alışverişin ve eğlencenin buluştuğu yer",
+        "exploreShops": "Mağazaları Keşfet",
+        "upcomingEvents": "Etkinliklere Göz At"
+    },
+    "shops": {
+        "title": "Mağazalar",
+        "featured": "Öne Çıkan Mağazalar",
+        "filterByCategory": "Kategoriye Göre Filtrele",
+        "filterByFloor": "Kata Göre Filtrele",
+        "floor": "Kat",
+        "phone": "Telefon",
+        "website": "Web Sitesi",
+        "workingHours": "Çalışma Saatleri",
+        "scanQr": "QR Kodu Tara"
+    },
+    "events": {
+        "title": "Etkinlikler",
+        "upcoming": "Yaklaşan Etkinlikler",
+        "past": "Geçmiş Etkinlikler",
+        "date": "Tarih",
+        "location": "Konum",
+        "noUpcoming": "Yaklaşan etkinlik bulunmuyor"
+    },
+    "footer": {
+        "contact": "İletişim",
+        "address": "Adres",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "workingHours": "Çalışma Saatleri",
+        "followUs": "Bizi Takip Edin",
+        "newsletter": "Bülten",
+        "newsletterPlaceholder": "E-posta adresiniz",
+        "subscribe": "Abone Ol",
+        "copyright": "© 2024 AVM Platform. Tüm hakları saklıdır.",
+        "digitalArchitecture": "Digital Architecture by",
+        "poweredBy": "AMST"
+    },
+    "admin": {
+        "dashboard": "Kontrol Paneli",
+        "shops": "Mağazalar",
+        "events": "Etkinlikler",
+        "sliders": "Slider Yönetimi",
+        "popups": "Popup Yönetimi",
+        "settings": "Ayarlar",
+        "logout": "Çıkış",
+        "addNew": "Yeni Ekle",
+        "editItem": "Düzenle",
+        "deleteConfirm": "Silmek istediğinize emin misiniz?",
+        "saveSuccess": "Başarıyla kaydedildi",
+        "deleteSuccess": "Başarıyla silindi",
+        "formValidation": {
+            "required": "Bu alan zorunludur",
+            "minLength": "Minimum {min} karakter olmalıdır",
+            "maxLength": "Maksimum {max} karakter olmalıdır",
+            "invalidUrl": "Geçerli bir URL giriniz",
+            "invalidEmail": "Geçerli bir e-posta giriniz"
+        },
+        "seo": {
+            "title": "SEO Ayarları",
+            "metaTitle": "Meta Başlık",
+            "metaDescription": "Meta Açıklama",
+            "required": "SEO alanları zorunludur! Kaliteli içerik için doldurmanız gerekmektedir."
+        },
+        "imageCropper": {
+            "title": "Görsel Kırp",
+            "logoHint": "Logo için 1:1 oran gereklidir",
+            "bannerHint": "Banner için 16:9 oran gereklidir",
+            "crop": "Kırp ve Kaydet"
+        },
+        "engineeredBy": "System Engineered by"
+    },
+    "categories": {
+        "fashion": "Moda",
+        "electronics": "Elektronik",
+        "food": "Yeme & İçme",
+        "entertainment": "Eğlence",
+        "health": "Sağlık",
+        "home": "Ev & Yaşam",
+        "jewelry": "Mücevher",
+        "sports": "Spor",
+        "cosmetics": "Kozmetik",
+        "services": "Hizmetler"
+    },
+    "floors": {
+        "basement": "Bodrum Kat",
+        "ground": "Zemin Kat",
+        "first": "1. Kat",
+        "second": "2. Kat",
+        "third": "3. Kat",
+        "fourth": "4. Kat"
+    }
+}

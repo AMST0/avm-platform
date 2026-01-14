@@ -1,0 +1,93 @@
+// ==========================================
+// Prisma Schema - AVM Platform (Simplified)
+// ==========================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// Shop - Simplified (No detail page, popup only)
+// ==========================================
+model Shop {
+  id           String   @id @default(uuid())
+  name         String
+  slug         String   @unique
+  category     String   // fashion, electronics, food, etc.
+  floor        Int
+  logo         String   // UploadThing URL
+  phone        String?
+  website      String?
+  workingHours String?
+  featured     Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ==========================================
+// Event - Campaigns and Events
+// ==========================================
+model Event {
+  id        String   @id @default(uuid())
+  titleTr   String
+  titleEn   String
+  titleRu   String
+  titleAr   String
+  slug      String   @unique
+  descTr    String
+  descEn    String
+  descRu    String
+  descAr    String
+  image     String   // UploadThing URL
+  startDate DateTime
+  endDate   DateTime
+  location  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// Slider - Homepage carousel
+// ==========================================
+model Slider {
+  id          String   @id @default(uuid())
+  titleTr     String
+  titleEn     String
+  titleRu     String
+  titleAr     String
+  subtitleTr  String?
+  subtitleEn  String?
+  subtitleRu  String?
+  subtitleAr  String?
+  image       String   // UploadThing URL
+  mobileImage String?  // UploadThing URL
+  link        String?
+  order       Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
+// Popup - Marketing popups
+// ==========================================
+model Popup {
+  id        String   @id @default(uuid())
+  titleTr   String
+  titleEn   String
+  titleRu   String
+  titleAr   String
+  image     String   // UploadThing URL
+  link      String?
+  frequency String   @default("once") // once | always
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

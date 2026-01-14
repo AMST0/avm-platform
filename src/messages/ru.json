@@ -1,0 +1,116 @@
+{
+    "common": {
+        "home": "Главная",
+        "shops": "Магазины",
+        "events": "События",
+        "contact": "Контакты",
+        "search": "Поиск...",
+        "searchPlaceholder": "Поиск магазинов или событий...",
+        "allCategories": "Все категории",
+        "allFloors": "Все этажи",
+        "noResults": "Результаты не найдены",
+        "loading": "Загрузка...",
+        "viewDetails": "Подробнее",
+        "learnMore": "Узнать больше",
+        "close": "Закрыть",
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "delete": "Удалить",
+        "edit": "Редактировать",
+        "add": "Добавить",
+        "language": "Язык"
+    },
+    "hero": {
+        "welcome": "Добро пожаловать",
+        "subtitle": "Где покупки встречаются с развлечениями",
+        "exploreShops": "Исследовать магазины",
+        "upcomingEvents": "Посмотреть события"
+    },
+    "shops": {
+        "title": "Магазины",
+        "featured": "Популярные магазины",
+        "filterByCategory": "Фильтр по категории",
+        "filterByFloor": "Фильтр по этажу",
+        "floor": "Этаж",
+        "phone": "Телефон",
+        "website": "Веб-сайт",
+        "workingHours": "Часы работы",
+        "scanQr": "Сканировать QR-код"
+    },
+    "events": {
+        "title": "События",
+        "upcoming": "Предстоящие события",
+        "past": "Прошедшие события",
+        "date": "Дата",
+        "location": "Место",
+        "noUpcoming": "Нет предстоящих событий"
+    },
+    "footer": {
+        "contact": "Контакты",
+        "address": "Адрес",
+        "phone": "Телефон",
+        "email": "Эл. почта",
+        "workingHours": "Часы работы",
+        "followUs": "Подписывайтесь",
+        "newsletter": "Рассылка",
+        "newsletterPlaceholder": "Ваш email",
+        "subscribe": "Подписаться",
+        "copyright": "© 2024 AVM Platform. Все права защищены.",
+        "digitalArchitecture": "Digital Architecture by",
+        "poweredBy": "AMST"
+    },
+    "admin": {
+        "dashboard": "Панель управления",
+        "shops": "Магазины",
+        "events": "События",
+        "sliders": "Управление слайдером",
+        "popups": "Управление всплывающими окнами",
+        "settings": "Настройки",
+        "logout": "Выход",
+        "addNew": "Добавить",
+        "editItem": "Редактировать",
+        "deleteConfirm": "Вы уверены, что хотите удалить?",
+        "saveSuccess": "Успешно сохранено",
+        "deleteSuccess": "Успешно удалено",
+        "formValidation": {
+            "required": "Это поле обязательно",
+            "minLength": "Минимум {min} символов",
+            "maxLength": "Максимум {max} символов",
+            "invalidUrl": "Введите корректный URL",
+            "invalidEmail": "Введите корректный email"
+        },
+        "seo": {
+            "title": "Настройки SEO",
+            "metaTitle": "Мета-заголовок",
+            "metaDescription": "Мета-описание",
+            "required": "Поля SEO обязательны! Заполните их для качественного контента."
+        },
+        "imageCropper": {
+            "title": "Обрезать изображение",
+            "logoHint": "Для логотипа требуется соотношение 1:1",
+            "bannerHint": "Для баннера требуется соотношение 16:9",
+            "crop": "Обрезать и сохранить"
+        },
+        "engineeredBy": "System Engineered by"
+    },
+    "categories": {
+        "fashion": "Мода",
+        "electronics": "Электроника",
+        "food": "Еда и напитки",
+        "entertainment": "Развлечения",
+        "health": "Здоровье",
+        "home": "Дом и жизнь",
+        "jewelry": "Ювелирные изделия",
+        "sports": "Спорт",
+        "cosmetics": "Косметика",
+        "services": "Услуги"
+    },
+    "floors": {
+        "basement": "Цокольный этаж",
+        "ground": "Первый этаж",
+        "first": "1-й этаж",
+        "second": "2-й этаж",
+        "third": "3-й этаж",
+        "fourth": "4-й этаж"
+    }
+}

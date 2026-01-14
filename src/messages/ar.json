@@ -1,0 +1,116 @@
+{
+    "common": {
+        "home": "الرئيسية",
+        "shops": "المتاجر",
+        "events": "الفعاليات",
+        "contact": "اتصل بنا",
+        "search": "بحث...",
+        "searchPlaceholder": "ابحث عن متاجر أو فعاليات...",
+        "allCategories": "جميع الفئات",
+        "allFloors": "جميع الطوابق",
+        "noResults": "لم يتم العثور على نتائج",
+        "loading": "جاري التحميل...",
+        "viewDetails": "عرض التفاصيل",
+        "learnMore": "اعرف المزيد",
+        "close": "إغلاق",
+        "save": "حفظ",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "edit": "تعديل",
+        "add": "إضافة",
+        "language": "اللغة"
+    },
+    "hero": {
+        "welcome": "أهلاً بكم",
+        "subtitle": "حيث يلتقي التسوق بالترفيه",
+        "exploreShops": "استكشف المتاجر",
+        "upcomingEvents": "عرض الفعاليات"
+    },
+    "shops": {
+        "title": "المتاجر",
+        "featured": "المتاجر المميزة",
+        "filterByCategory": "تصفية حسب الفئة",
+        "filterByFloor": "تصفية حسب الطابق",
+        "floor": "الطابق",
+        "phone": "الهاتف",
+        "website": "الموقع الإلكتروني",
+        "workingHours": "ساعات العمل",
+        "scanQr": "امسح رمز QR"
+    },
+    "events": {
+        "title": "الفعاليات",
+        "upcoming": "الفعاليات القادمة",
+        "past": "الفعاليات السابقة",
+        "date": "التاريخ",
+        "location": "الموقع",
+        "noUpcoming": "لا توجد فعاليات قادمة"
+    },
+    "footer": {
+        "contact": "اتصل بنا",
+        "address": "العنوان",
+        "phone": "الهاتف",
+        "email": "البريد الإلكتروني",
+        "workingHours": "ساعات العمل",
+        "followUs": "تابعنا",
+        "newsletter": "النشرة الإخبارية",
+        "newsletterPlaceholder": "بريدك الإلكتروني",
+        "subscribe": "اشترك",
+        "copyright": "© 2024 AVM Platform. جميع الحقوق محفوظة.",
+        "digitalArchitecture": "Digital Architecture by",
+        "poweredBy": "AMST"
+    },
+    "admin": {
+        "dashboard": "لوحة التحكم",
+        "shops": "المتاجر",
+        "events": "الفعاليات",
+        "sliders": "إدارة الشرائح",
+        "popups": "إدارة النوافذ المنبثقة",
+        "settings": "الإعدادات",
+        "logout": "تسجيل الخروج",
+        "addNew": "إضافة جديد",
+        "editItem": "تعديل",
+        "deleteConfirm": "هل أنت متأكد أنك تريد الحذف؟",
+        "saveSuccess": "تم الحفظ بنجاح",
+        "deleteSuccess": "تم الحذف بنجاح",
+        "formValidation": {
+            "required": "هذا الحقل مطلوب",
+            "minLength": "الحد الأدنى {min} أحرف",
+            "maxLength": "الحد الأقصى {max} أحرف",
+            "invalidUrl": "الرجاء إدخال رابط صحيح",
+            "invalidEmail": "الرجاء إدخال بريد إلكتروني صحيح"
+        },
+        "seo": {
+            "title": "إعدادات SEO",
+            "metaTitle": "عنوان الميتا",
+            "metaDescription": "وصف الميتا",
+            "required": "حقول SEO إلزامية! يرجى ملؤها للحصول على محتوى عالي الجودة."
+        },
+        "imageCropper": {
+            "title": "قص الصورة",
+            "logoHint": "نسبة 1:1 مطلوبة للشعار",
+            "bannerHint": "نسبة 16:9 مطلوبة للبانر",
+            "crop": "قص وحفظ"
+        },
+        "engineeredBy": "System Engineered by"
+    },
+    "categories": {
+        "fashion": "أزياء",
+        "electronics": "إلكترونيات",
+        "food": "طعام ومشروبات",
+        "entertainment": "ترفيه",
+        "health": "صحة",
+        "home": "المنزل والمعيشة",
+        "jewelry": "مجوهرات",
+        "sports": "رياضة",
+        "cosmetics": "مستحضرات تجميل",
+        "services": "خدمات"
+    },
+    "floors": {
+        "basement": "الطابق السفلي",
+        "ground": "الطابق الأرضي",
+        "first": "الطابق الأول",
+        "second": "الطابق الثاني",
+        "third": "الطابق الثالث",
+        "fourth": "الطابق الرابع"
+    }
+}
