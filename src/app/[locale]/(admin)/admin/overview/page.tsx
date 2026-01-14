@@ -4,7 +4,7 @@ import { OverviewClient } from '@/components/admin/overview-client';
 export default async function AdminOverviewPage() {
     const result = await getDashboardStatsAction();
 
-    const initialData = result.success ? result.data : {
+    const initialData = result.success && result.data ? result.data : {
         shopCount: 0,
         eventCount: 0,
         sliderCount: 0,

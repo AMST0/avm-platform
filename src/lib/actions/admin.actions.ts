@@ -71,6 +71,7 @@ export async function getDashboardStatsAction() {
                 eventCount,
                 sliderCount,
                 popupCount,
+                inquiryCount,
                 activities: sortedActivities
             }
         };
