@@ -25,8 +25,13 @@ interface ShopDetailPageProps {
 }
 
 export async function generateStaticParams() {
-    const shops = await getShops();
-    return shops.map((shop) => ({ slug: shop.slug }));
+    try {
+        const shops = await getShops();
+        return shops.map((shop) => ({ slug: shop.slug }));
+    } catch (error) {
+        console.error("Static generation skipped for shops due to DB connectivity issues:", error);
+        return [];
+    }
 }
 
 export default async function ShopDetailPage({ params }: ShopDetailPageProps) {

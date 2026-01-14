@@ -21,8 +21,13 @@ interface EventDetailPageProps {
 }
 
 export async function generateStaticParams() {
-    const events = await getUpcomingEvents();
-    return events.map((event) => ({ slug: event.slug }));
+    try {
+        const events = await getUpcomingEvents();
+        return events.map((event) => ({ slug: event.slug }));
+    } catch (error) {
+        console.error("Static generation skipped for events due to DB connectivity issues:", error);
+        return [];
+    }
 }
 
 export default async function EventDetailPage({ params }: EventDetailPageProps) {
