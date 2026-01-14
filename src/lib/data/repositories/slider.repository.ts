@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db';
 import { Slider, SliderInput } from '@/lib/types';
+import { mockSliders } from '../mock/sliders';
 
 function mapPrismaSliderToSlider(prismaSlider: any): Slider {
     return {
@@ -27,11 +28,16 @@ function mapPrismaSliderToSlider(prismaSlider: any): Slider {
 }
 
 export async function getSliders(): Promise<Slider[]> {
-    const sliders = await prisma.slider.findMany({
-        orderBy: { order: 'asc' },
-        where: { isActive: true },
-    });
-    return sliders.map(mapPrismaSliderToSlider);
+    try {
+        const sliders = await prisma.slider.findMany({
+            orderBy: { order: 'asc' },
+            where: { isActive: true },
+        });
+        return sliders.map(mapPrismaSliderToSlider);
+    } catch (error) {
+        console.warn('DB Connection failed in getSliders. Falling back to mock data.');
+        return mockSliders;
+    }
 }
 
 export async function getAllSliders(): Promise<Slider[]> {
@@ -42,11 +48,18 @@ export async function getAllSliders(): Promise<Slider[]> {
 }
 
 export async function getSliderById(id: string): Promise<Slider | null> {
-    const slider = await prisma.slider.findUnique({
-        where: { id },
-    });
-    if (!slider) return null;
-    return mapPrismaSliderToSlider(slider);
+    try {
+        const slider = await prisma.slider.findUnique({
+            where: { id },
+        });
+        if (!slider) {
+            return mockSliders.find(s => s.id === id) || null;
+        }
+        return mapPrismaSliderToSlider(slider);
+    } catch (error) {
+        console.warn(`DB Connection failed in getSliderById for ${id}. Falling back to mock data.`);
+        return mockSliders.find(s => s.id === id) || null;
+    }
 }
 
 export async function createSlider(data: SliderInput): Promise<Slider> {

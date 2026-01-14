@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db';
 import { Shop, ShopFilters, ShopInput } from '@/lib/types';
 import { Prisma } from '@prisma/client';
+import { mockShops } from '../mock/shops';
 
 function mapPrismaShopToShop(prismaShop: any): Shop {
     return {
@@ -20,52 +21,66 @@ function mapPrismaShopToShop(prismaShop: any): Shop {
 }
 
 export async function getShops(filters?: ShopFilters): Promise<Shop[]> {
-    const where: Prisma.ShopWhereInput = {
-        isActive: true,
-    };
+    try {
+        const where: Prisma.ShopWhereInput = {
+            isActive: true,
+        };
 
-    if (filters) {
-        if (filters.category) {
-            where.category = filters.category;
-        }
-        if (filters.floor !== undefined) {
-            where.floor = filters.floor;
-        }
-        if (filters.search) {
-            where.name = {
-                contains: filters.search,
-                mode: 'insensitive',
-            };
-        }
-        if (filters.featured !== undefined) {
-            where.featured = filters.featured;
-        }
-        if (filters.isActive === undefined) {
-            delete where.isActive;
+        if (filters) {
+            if (filters.category) {
+                where.category = filters.category;
+            }
+            if (filters.floor !== undefined) {
+                where.floor = filters.floor;
+            }
+            if (filters.search) {
+                where.name = {
+                    contains: filters.search,
+                    mode: 'insensitive',
+                };
+            }
+            if (filters.featured !== undefined) {
+                where.featured = filters.featured;
+            }
+            if (filters.isActive === undefined) {
+                delete where.isActive;
+            } else {
+                where.isActive = filters.isActive;
+            }
         } else {
-            where.isActive = filters.isActive;
+            // Default behavior for listing: show all active
+            // Note: deleted original logic that was removing isActive if no filters
         }
-    } else {
-        delete where.isActive;
+
+        const shops = await prisma.shop.findMany({
+            where,
+            orderBy: {
+                name: 'asc',
+            },
+        });
+
+        return shops.map(mapPrismaShopToShop);
+    } catch (error) {
+        console.warn('DB Connection failed in getShops. Falling back to mock data.');
+        return mockShops.filter(s => s.isActive);
     }
-
-    const shops = await prisma.shop.findMany({
-        where,
-        orderBy: {
-            name: 'asc',
-        },
-    });
-
-    return shops.map(mapPrismaShopToShop);
 }
 
 export async function getShopBySlug(slug: string): Promise<Shop | null> {
-    const shop = await prisma.shop.findUnique({
-        where: { slug },
-    });
+    try {
+        const shop = await prisma.shop.findUnique({
+            where: { slug },
+        });
 
-    if (!shop) return null;
-    return mapPrismaShopToShop(shop);
+        if (!shop) {
+            // Check mock data as secondary fallback for pre-rendering
+            return mockShops.find(s => s.slug === slug) || null;
+        }
+        return mapPrismaShopToShop(shop);
+    } catch (error) {
+        console.warn(`DB Connection failed in getShopBySlug for ${slug}. Falling back to mock data.`);
+        return mockShops.find(s => s.slug === slug) || null;
+    }
 }
 
 export async function createShop(data: ShopInput): Promise<Shop> {
@@ -97,12 +112,18 @@ export async function updateShop(id: string, data: Partial<ShopInput>): Promise<
 }
 
 export async function getFeaturedShops(limit?: number): Promise<Shop[]> {
-    const shops = await prisma.shop.findMany({
-        where: { isActive: true, featured: true },
-        orderBy: { name: 'asc' },
-        take: limit,
-    });
-    return shops.map(mapPrismaShopToShop);
+    try {
+        const shops = await prisma.shop.findMany({
+            where: { isActive: true, featured: true },
+            orderBy: { name: 'asc' },
+            take: limit,
+        });
+        return shops.map(mapPrismaShopToShop);
+    } catch (error) {
+        console.warn('DB Connection failed in getFeaturedShops. Falling back to mock data.');
+        const featured = mockShops.filter(s => s.isActive && s.featured);
+        return limit ? featured.slice(0, limit) : featured;
+    }
 }
 
 export async function deleteShop(id: string): Promise<void> {

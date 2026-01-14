@@ -28,16 +28,6 @@
         "exploreShops": "Explore Shops",
         "upcomingEvents": "View Events"
     },
-    "leasing": {
-        "title": "Leasing Application",
-        "subtitle": "Move your business to the future. Take your place in our modern shop areas.",
-        "filterByFloor": "Filter by Floor",
-        "floor": "Floor",
-        "phone": "Phone",
-        "website": "Website",
-        "workingHours": "Working Hours",
-        "scanQr": "Scan QR Code"
-    },
     "shops": {
         "title": "Shops",
         "featured": "Featured Shops",
@@ -134,5 +124,33 @@
         "second": "2nd Floor",
         "third": "3rd Floor",
         "fourth": "4th Floor"
+    },
+    "leasing": {
+        "title": "Leasing Application",
+        "subtitle": "Move your business to the future. Take your place in our modern shop areas.",
+        "whyUsTitle": "Why AVM Platform?",
+        "whyUs1Title": "High Traffic",
+        "whyUs1Desc": "Increase your brand visibility with thousands of daily visitors.",
+        "whyUs2Title": "Modern Infrastructure",
+        "whyUs2Desc": "Shops equipped with the latest technology and security systems.",
+        "whyUs3Title": "Strategic Location",
+        "whyUs3Desc": "Easy to reach location in the most lively part of the city.",
+        "formTitle": "Leasing Request Form",
+        "formSubtitle": "Just fill out the form for detailed information and appointment.",
+        "sectionStore": "STORE INFORMATION",
+        "sectionContact": "AUTHORIZED CONTACT PERSON INFORMATION",
+        "firmTitle": "Company Title",
+        "brand": "Brand",
+        "minM2": "Min. m²",
+        "maxM2": "Max. m²",
+        "nameSurname": "Name Surname",
+        "titleLabel": "Title",
+        "email": "Email Address",
+        "phone": "Mobile Phone",
+        "message": "Message",
+        "kvkk": "I accept and declare that I have read and understood the PDPL Clarification Text.",
+        "marketing": "By submitting this form, I consent to being contacted by AVM Platform regarding its advertisements, announcements, campaigns and activities in accordance with Law No. 6563.",
+        "submit": "SUBMIT",
+        "formSuccess": "Your application has been received successfully. We will contact you as soon as possible."
     }
 }

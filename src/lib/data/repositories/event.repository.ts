@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db';
 import { Event, EventInput } from '@/lib/types';
+import { mockEvents } from '../mock/events';
 
 function mapPrismaEventToEvent(prismaEvent: any): Event {
     return {
@@ -83,39 +84,56 @@ function mapPrismaEventToEvent(prismaEvent: any): Event {
 }
 
 export async function getEvents(): Promise<Event[]> {
-    const events = await prisma.event.findMany({
-        orderBy: { startDate: 'desc' },
-        where: { isActive: true } // Default to active?
-    });
-    return events.map(mapPrismaEventToEvent);
+    try {
+        const events = await prisma.event.findMany({
+            orderBy: { startDate: 'desc' },
+            where: { isActive: true } // Default to active?
+        });
+        return events.map(mapPrismaEventToEvent);
+    } catch (error) {
+        console.warn('DB Connection failed in getEvents. Falling back to mock data.');
+        return mockEvents;
+    }
 }
 
 export async function getUpcomingEvents(limit?: number): Promise<Event[]> {
-    const events = await prisma.event.findMany({
-        where: {
-            isActive: true,
-            endDate: {
-                gte: new Date(),
+    try {
+        const events = await prisma.event.findMany({
+            where: {
+                isActive: true,
+                endDate: {
+                    gte: new Date(),
+                },
             },
-        },
-        orderBy: { startDate: 'asc' },
-        take: limit,
-    });
-    return events.map(mapPrismaEventToEvent);
+            orderBy: { startDate: 'asc' },
+            take: limit,
+        });
+        return events.map(mapPrismaEventToEvent);
+    } catch (error) {
+        console.warn('DB Connection failed in getUpcomingEvents. Falling back to mock data.');
+        const upcoming = mockEvents.filter(e => new Date(e.endDate) >= new Date());
+        return limit ? upcoming.slice(0, limit) : upcoming;
+    }
 }
 
 export async function getPastEvents(limit?: number): Promise<Event[]> {
-    const events = await prisma.event.findMany({
-        where: {
-            isActive: true,
-            endDate: {
-                lt: new Date(),
+    try {
+        const events = await prisma.event.findMany({
+            where: {
+                isActive: true,
+                endDate: {
+                    lt: new Date(),
+                },
             },
-        },
-        orderBy: { endDate: 'desc' },
-        take: limit,
-    });
-    return events.map(mapPrismaEventToEvent);
+            orderBy: { endDate: 'desc' },
+            take: limit,
+        });
+        return events.map(mapPrismaEventToEvent);
+    } catch (error) {
+        console.warn('DB Connection failed in getPastEvents. Falling back to mock data.');
+        const past = mockEvents.filter(e => new Date(e.endDate) < new Date());
+        return limit ? past.slice(0, limit) : past;
+    }
 }
 
 export async function getAllEvents(): Promise<Event[]> { // For admin
@@ -126,11 +144,18 @@ export async function getAllEvents(): Promise<Event[]> { // For admin
 }
 
 export async function getEventBySlug(slug: string): Promise<Event | null> {
-    const event = await prisma.event.findUnique({
-        where: { slug },
-    });
-    if (!event) return null;
-    return mapPrismaEventToEvent(event);
+    try {
+        const event = await prisma.event.findUnique({
+            where: { slug },
+        });
+        if (!event) {
+            return mockEvents.find(e => e.slug === slug) || null;
+        }
+        return mapPrismaEventToEvent(event);
+    } catch (error) {
+        console.warn(`DB Connection failed in getEventBySlug for ${slug}. Falling back to mock data.`);
+        return mockEvents.find(e => e.slug === slug) || null;
+    }
 }
 
 export async function createEvent(data: EventInput): Promise<Event> {
