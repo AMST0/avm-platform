@@ -24,6 +24,7 @@ model Shop {
   logo         String   // UploadThing URL
   phone        String?
   website      String?
+  workingHours String?
 
   featured     Boolean  @default(false)
   isActive     Boolean  @default(true)
