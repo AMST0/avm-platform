@@ -34,10 +34,23 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
+interface Inquiry {
+    id: string;
+    type: string;
+    name: string;
+    email: string;
+    phone: string;
+    message: string | null;
+    status: string;
+    details: any;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export default function AdminInquiriesPage() {
-    const [inquiries, setInquiries] = useState<any[]>([]);
+    const [inquiries, setInquiries] = useState<Inquiry[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
+    const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
@@ -47,8 +60,8 @@ export default function AdminInquiriesPage() {
     async function fetchInquiries() {
         setLoading(true);
         const result = await getInquiriesAction();
-        if (result.success) {
-            setInquiries(result.data);
+        if (result.success && result.data) {
+            setInquiries(result.data as Inquiry[]);
         }
         setLoading(false);
     }
