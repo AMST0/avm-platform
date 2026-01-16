@@ -117,7 +117,7 @@ export default function AdminEventsPage() {
             setUpcomingEvents(upcoming);
             setPastEvents(past);
         } catch (error) {
-            console.error('Fetch error:', error);
+            if (process.env.NODE_ENV === 'development') console.error('Fetch error:', error);
             toast.error('Etkinlikler yüklenirken hata oluştu');
         } finally {
             setIsLoading(false);
@@ -176,7 +176,7 @@ export default function AdminEventsPage() {
             // Direct fetch to be safe
             fetchEvents();
         } catch (error) {
-            console.error('Delete error:', error);
+            if (process.env.NODE_ENV === 'development') console.error('Delete error:', error);
             toast.error('Etkinlik silinirken hata oluştu', { id: toastId });
         }
     };

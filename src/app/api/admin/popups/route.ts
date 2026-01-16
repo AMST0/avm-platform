@@ -8,7 +8,7 @@ export async function GET() {
         const popups = await getPopups();
         return NextResponse.json({ success: true, data: popups });
     } catch (error) {
-        console.error('Failed to fetch popups:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to fetch popups:', error);
         return NextResponse.json(
             { success: false, error: 'Failed to fetch popups' },
             { status: 500 }
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         const popup = await createPopup(body as PopupInput);
         return NextResponse.json({ success: true, data: popup });
     } catch (error) {
-        console.error('Failed to create popup:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to create popup:', error);
         return NextResponse.json(
             { success: false, error: 'Failed to create popup' },
             { status: 500 }
@@ -47,7 +47,7 @@ export async function DELETE(request: NextRequest) {
         await deletePopup(id);
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error('Failed to delete popup:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to delete popup:', error);
         return NextResponse.json(
             { success: false, error: 'Failed to delete popup' },
             { status: 500 }
@@ -72,7 +72,7 @@ export async function PATCH(request: NextRequest) {
         const popup = await updatePopup(id, body);
         return NextResponse.json({ success: true, data: popup });
     } catch (error) {
-        console.error('Failed to update popup:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to update popup:', error);
         return NextResponse.json(
             { success: false, error: 'Failed to update popup' },
             { status: 500 }

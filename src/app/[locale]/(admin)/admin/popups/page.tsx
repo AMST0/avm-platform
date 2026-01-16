@@ -25,7 +25,7 @@ export default function AdminPopupsPage() {
                 toast.error('Popup\'lar yüklenirken hata oluştu');
             }
         } catch (error) {
-            console.error('Failed to fetch popups:', error);
+            if (process.env.NODE_ENV === 'development') console.error('Failed to fetch popups:', error);
             toast.error('Popup\'lar yüklenirken hata oluştu');
         }
         setIsLoading(false);

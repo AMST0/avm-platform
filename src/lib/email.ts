@@ -23,13 +23,13 @@ export async function sendInquiryNotification({
         : `Yeni Kiralama Başvurusu: ${details?.brand || name}`;
 
     if (!resend) {
-        console.warn('Resend API key missing or invalid. Skipping email notification.');
+        if (process.env.NODE_ENV === 'development') console.warn('Resend API key missing or invalid. Skipping email notification.');
         return { success: true, warning: 'Email not sent due to missing key' };
     }
 
     const { data, error } = await resend.emails.send({
         from: 'AVM Platform <onboarding@resend.dev>',
-        to: ['ataberkdudu@gmail.com'],
+        to: [process.env.NOTIFICATION_EMAIL || 'admin@example.com'],
         subject: subject,
         html: `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
@@ -86,7 +86,7 @@ export async function sendInquiryNotification({
     });
 
     if (error) {
-        console.error('Email sending failed:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Email sending failed:', error);
         return { success: false, error };
     }
 

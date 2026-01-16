@@ -96,7 +96,7 @@ export default function AdminShopsPage() {
             setShops((prev) => prev.filter((s) => s.id !== shopId));
             toast.success('Mağaza başarıyla silindi', { id: toastId });
         } catch (error) {
-            console.error('Delete error:', error);
+            if (process.env.NODE_ENV === 'development') console.error('Delete error:', error);
             toast.error('Mağaza silinirken bir hata oluştu', { id: toastId });
         }
     };
@@ -129,7 +129,7 @@ export default function AdminShopsPage() {
             setIsFormOpen(false);
             setEditingShop(null);
         } catch (error) {
-            console.error(error);
+            if (process.env.NODE_ENV === 'development') console.error(error);
             toast.error('Bir hata oluştu');
         }
     };

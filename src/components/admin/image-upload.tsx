@@ -105,7 +105,7 @@ export function ImageUploadWithCrop({
 
             await startUpload([file]);
         } catch (error) {
-            console.error(error);
+            if (process.env.NODE_ENV === 'development') console.error(error);
             toast.error("Dosya hazırlanırken bir hata oluştu");
             setIsUploading(false);
         }

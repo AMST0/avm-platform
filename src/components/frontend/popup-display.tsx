@@ -35,7 +35,7 @@ export function PopupDisplay() {
                     setTimeout(() => setIsOpen(true), 1500);
                 }
             } catch (error) {
-                console.error('Failed to fetch popup:', error);
+                if (process.env.NODE_ENV === 'development') console.error('Failed to fetch popup:', error);
             }
         };
 

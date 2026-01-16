@@ -16,7 +16,7 @@ export async function getAllSlidersAction() {
         const sliders = await getAllSliders();
         return { success: true, data: sliders };
     } catch (error) {
-        console.error('Failed to fetch sliders:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to fetch sliders:', error);
         return { success: false, error: 'Sliderlar alınamadı' };
     }
 }
@@ -28,7 +28,7 @@ export async function createSliderAction(data: SliderInput) {
         revalidatePath('/');
         return { success: true, data: slider };
     } catch (error) {
-        console.error('Failed to create slider:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to create slider:', error);
         return { success: false, error: 'Slider oluşturulamadı' };
     }
 }
@@ -40,7 +40,7 @@ export async function updateSliderAction(id: string, data: Partial<SliderInput>)
         revalidatePath('/');
         return { success: true, data: slider };
     } catch (error) {
-        console.error('Failed to update slider:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to update slider:', error);
         return { success: false, error: 'Slider güncellenemedi' };
     }
 }
@@ -52,7 +52,7 @@ export async function deleteSliderAction(id: string) {
         revalidatePath('/');
         return { success: true };
     } catch (error) {
-        console.error('Failed to delete slider:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to delete slider:', error);
         return { success: false, error: 'Slider silinemedi' };
     }
 }
@@ -64,7 +64,7 @@ export async function updateSliderOrderAction(items: { id: string; order: number
         revalidatePath('/');
         return { success: true };
     } catch (error) {
-        console.error('Failed to update slider order:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to update slider order:', error);
         return { success: false, error: 'Sıralama güncellenemedi' };
     }
 }

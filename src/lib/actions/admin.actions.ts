@@ -76,7 +76,7 @@ export async function getDashboardStatsAction() {
             }
         };
     } catch (error) {
-        console.error('Failed to fetch dashboard stats:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to fetch dashboard stats:', error);
         return { success: false, error: 'Veriler alınamadı' };
     }
 }

@@ -25,12 +25,12 @@ export async function createInquiryAction(formData: {
         });
 
         // Trigger Email Notification (Async, don't block response)
-        sendInquiryNotification(formData).catch(console.error);
+        sendInquiryNotification(formData).catch(err => process.env.NODE_ENV === 'development' && console.error(err));
 
         revalidatePath('/admin/inquiries');
         return { success: true, data: inquiry };
     } catch (error) {
-        console.error('Failed to create inquiry:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Failed to create inquiry:', error);
         return { success: false, error: 'Bir hata oluştu.' };
     }
 }

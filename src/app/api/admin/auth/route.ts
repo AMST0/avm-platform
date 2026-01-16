@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
 
-const SECRET_KEY = new TextEncoder().encode(process.env.AUTH_SECRET || 'fallback-secret');
+const authSecret = process.env.AUTH_SECRET;
+if (!authSecret) {
+    throw new Error('AUTH_SECRET environment variable is required for security');
+}
+const SECRET_KEY = new TextEncoder().encode(authSecret);
 const SESSION_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
 // POST - Login
@@ -46,7 +50,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error('Login error:', error);
+        if (process.env.NODE_ENV === 'development') console.error('Login error:', error);
         return NextResponse.json(
             { success: false, error: 'Login failed' },
             { status: 500 }

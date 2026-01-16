@@ -80,8 +80,8 @@ export function ShopForm({ initialData, shopSlug, onSubmit }: ShopFormProps) {
             await onSubmit(data);
             toast.success(t('saveSuccess'));
         } catch (error) {
+            if (process.env.NODE_ENV === 'development') console.error(error);
             toast.error('Bir hata oluştu');
-            console.error(error);
         } finally {
             setIsSubmitting(false);
         }

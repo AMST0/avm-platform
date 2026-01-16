@@ -5,7 +5,11 @@ import { jwtVerify } from 'jose';
 
 const intlMiddleware = createIntlMiddleware(routing);
 
-const SECRET_KEY = new TextEncoder().encode(process.env.AUTH_SECRET || 'fallback-secret');
+const authSecret = process.env.AUTH_SECRET;
+if (!authSecret) {
+    throw new Error('AUTH_SECRET environment variable is required for security');
+}
+const SECRET_KEY = new TextEncoder().encode(authSecret);
 
 async function verifyToken(token: string): Promise<boolean> {
     try {

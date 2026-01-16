@@ -124,7 +124,7 @@ export function ImageCropper({
             setZoom(1);
             setRotation(0);
         } catch (error) {
-            console.error('Error cropping image:', error);
+            if (process.env.NODE_ENV === 'development') console.error('Error cropping image:', error);
         }
     }, [croppedAreaPixels, imageSrc, onCropComplete, onOpenChange]);
 
