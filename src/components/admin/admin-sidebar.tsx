@@ -2,10 +2,12 @@
 
 import { usePathname } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
+import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { toast } from 'sonner';
 import {
     LayoutDashboard,
     Store,
@@ -13,7 +15,6 @@ import {
     Image,
     Megaphone,
     Mail,
-    Settings,
     LogOut,
     ExternalLink,
 } from 'lucide-react';
@@ -27,20 +28,28 @@ const adminNavigation = [
     { href: '/admin/inquiries', label: 'inquiries', icon: Mail },
 ];
 
-const adminSecondary = [
-    { href: '/admin/settings', label: 'settings', icon: Settings },
-];
-
 export function AdminSidebar() {
     const t = useTranslations('admin');
     const locale = useLocale();
     const pathname = usePathname();
+    const router = useRouter();
 
     const isActive = (href: string) => {
         if (href === '/admin' || href === '/admin/overview') {
             return pathname === '/admin' || pathname === `/${locale}/admin` || pathname.includes('/admin/overview');
         }
         return pathname.includes(href);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/admin/auth', { method: 'DELETE' });
+            toast.success('Çıkış yapıldı');
+            router.push(`/${locale}/admin/login`);
+            router.refresh();
+        } catch (error) {
+            toast.error('Çıkış yapılırken hata oluştu');
+        }
     };
 
     return (
@@ -80,38 +89,13 @@ export function AdminSidebar() {
                             );
                         })}
                     </nav>
-
-                    <div className="my-4 mx-3 h-px bg-slate-800" />
-
-                    <nav className="space-y-1 px-2">
-                        {adminSecondary.map((item) => {
-                            const active = isActive(item.href);
-                            return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={cn(
-                                        'flex items-center justify-center w-11 h-11 mx-auto rounded-xl transition-all duration-200 group relative',
-                                        active
-                                            ? 'bg-gradient-to-br from-gold/20 to-amber-500/10 text-gold'
-                                            : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                                    )}
-                                    title={t(item.label)}
-                                >
-                                    <item.icon className="h-5 w-5" />
-                                    {active && (
-                                        <div className="absolute start-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-gold rounded-e-full" />
-                                    )}
-                                </Link>
-                            );
-                        })}
-                    </nav>
                 </ScrollArea>
 
                 {/* Footer */}
                 <div className="p-2 border-t border-slate-800">
                     <Button
                         variant="ghost"
+                        onClick={handleLogout}
                         className="w-11 h-11 mx-auto flex items-center justify-center text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl p-0"
                         title={t('logout')}
                     >
@@ -122,3 +106,4 @@ export function AdminSidebar() {
         </aside>
     );
 }
+

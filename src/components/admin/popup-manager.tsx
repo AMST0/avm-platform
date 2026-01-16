@@ -279,7 +279,7 @@ export function PopupManager({
                                         <ImageUploadWithCrop
                                             value={field.value}
                                             onChange={field.onChange}
-                                            aspectRatio="16:9"
+                                            aspectRatio="free"
                                             label="Görsel *"
                                             error={form.formState.errors.image?.message}
                                         />

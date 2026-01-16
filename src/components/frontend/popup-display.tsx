@@ -2,15 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useLocale } from 'next-intl';
-import { getActivePopup } from '@/lib/data';
 import { useUserPreferencesStore } from '@/lib/store';
 import type { Popup, Locale } from '@/lib/types';
 import {
     Dialog,
     DialogContent,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
 
 export function PopupDisplay() {
     const locale = useLocale() as Locale;
@@ -21,17 +18,24 @@ export function PopupDisplay() {
 
     useEffect(() => {
         const fetchPopup = async () => {
-            const activePopup = await getActivePopup();
+            try {
+                const response = await fetch('/api/popup');
+                const result = await response.json();
 
-            if (activePopup) {
-                // Check if user has already seen this popup (for frequency: 'once')
-                if (activePopup.frequency === 'once' && hasSeenPopupById(activePopup.id)) {
-                    return;
+                if (result.success && result.data) {
+                    const activePopup = result.data;
+
+                    // Check if user has already seen this popup (for frequency: 'once')
+                    if (activePopup.frequency === 'once' && hasSeenPopupById(activePopup.id)) {
+                        return;
+                    }
+
+                    setPopup(activePopup);
+                    // Slight delay for better UX
+                    setTimeout(() => setIsOpen(true), 1500);
                 }
-
-                setPopup(activePopup);
-                // Slight delay for better UX
-                setTimeout(() => setIsOpen(true), 1500);
+            } catch (error) {
+                console.error('Failed to fetch popup:', error);
             }
         };
 
@@ -76,3 +80,4 @@ export function PopupDisplay() {
         </Dialog>
     );
 }
+

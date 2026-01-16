@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 interface ImageUploadWithCropProps {
     value?: string;
     onChange: (value: string) => void;
-    aspectRatio: AspectRatio;
+    aspectRatio?: AspectRatio;
     label: string;
     hint?: string;
     disabled?: boolean;
@@ -25,7 +25,7 @@ interface ImageUploadWithCropProps {
 export function ImageUploadWithCrop({
     value,
     onChange,
-    aspectRatio,
+    aspectRatio = '16:9',
     label,
     hint,
     disabled,
@@ -192,7 +192,7 @@ export function ImageUploadWithCrop({
                                     <ImageIcon className="h-5 w-5 text-gold" />
                                 </div>
                                 <span className="text-xs text-muted-foreground">
-                                    {aspectRatio === '1:1' ? '1:1 Oran' : aspectRatio === '21:9' ? '21:9 Oran' : '16:9 Oran'}
+                                    {aspectRatio === '1:1' ? '1:1 Oran' : aspectRatio === '21:9' ? '21:9 Oran' : aspectRatio === 'free' ? 'Serbest Oran' : '16:9 Oran'}
                                 </span>
                                 <span className="text-xs font-medium text-gold">Görsel Yükle</span>
                             </>

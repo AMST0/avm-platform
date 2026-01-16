@@ -16,7 +16,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { ZoomIn, ZoomOut, RotateCw, Check, X } from 'lucide-react';
 
-export type AspectRatio = '1:1' | '16:9' | '21:9';
+export type AspectRatio = '1:1' | '16:9' | '21:9' | 'free';
 
 interface ImageCropperProps {
     open: boolean;
@@ -26,10 +26,11 @@ interface ImageCropperProps {
     onCropComplete: (croppedImageUrl: string) => void;
 }
 
-const aspectRatioValues: Record<AspectRatio, number> = {
+const aspectRatioValues: Record<AspectRatio, number | undefined> = {
     '1:1': 1,
     '16:9': 16 / 9,
     '21:9': 21 / 9,
+    'free': undefined,
 };
 
 /**
@@ -140,7 +141,7 @@ export function ImageCropper({
                 <DialogHeader>
                     <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription>
-                        {aspectRatio === '1:1' ? t('logoHint') : aspectRatio === '21:9' ? 'Geniş banner için ideal oran (21:9)' : t('bannerHint')}
+                        {aspectRatio === '1:1' ? t('logoHint') : aspectRatio === '21:9' ? 'Geniş banner için ideal oran (21:9)' : aspectRatio === 'free' ? 'Serbestçe kırpabilirsiniz' : t('bannerHint')}
                     </DialogDescription>
                 </DialogHeader>
 

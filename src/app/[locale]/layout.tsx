@@ -6,6 +6,7 @@ import { routing, isRtlLocale, type Locale } from '@/i18n/routing';
 import { Toaster } from '@/components/ui/sonner';
 import { AMSTConsoleSignature } from '@/components/shared/amst-console-signature';
 import { GlobalShopPopup } from '@/components/shops/global-shop-popup';
+import { PopupDisplay } from '@/components/frontend/popup-display';
 import "../globals.css";
 
 const geistSans = Geist({
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
                 <NextIntlClientProvider messages={messages}>
                     <AMSTConsoleSignature />
                     {children}
+                    <PopupDisplay />
                     <GlobalShopPopup />
                     <Toaster position={dir === 'rtl' ? 'bottom-left' : 'bottom-right'} />
                 </NextIntlClientProvider>

@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Header, Footer, SpotlightSearch } from '@/components/shared';
 import { FeaturedShopCard } from '@/components/frontend/featured-shop-card';
+import { HomeSlider } from '@/components/frontend';
 import type { Locale } from '@/lib/types';
 
 export default async function HomePage({
@@ -35,46 +36,50 @@ export default async function HomePage({
             <Header />
             <SpotlightSearch />
 
-            {/* Hero Section */}
-            <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center luxury-gradient overflow-hidden">
-                {/* Animated Background Elements */}
-                <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute top-1/4 start-1/4 w-96 h-96 bg-gold/10 rounded-full blur-3xl animate-pulse" />
-                    <div className="absolute bottom-1/4 end-1/4 w-64 h-64 bg-navy-light/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-                </div>
-
-                <div className="container mx-auto px-4 text-center relative z-10">
-                    <Badge className="mb-6 bg-gold/20 text-gold border-gold/30 hover:bg-gold/30">
-                        <Sparkles className="w-3 h-3 me-1" />
-                        Premium Shopping Experience
-                    </Badge>
-
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight">
-                        {tHero('welcome')}
-                    </h1>
-
-                    <p className="text-xl md:text-2xl text-white/70 mb-10 max-w-2xl mx-auto">
-                        {tHero('subtitle')}
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button asChild size="lg" className="bg-gold hover:bg-gold-light text-black font-semibold px-8 h-12 text-base">
-                            <Link href="/shops">
-                                {tHero('exploreShops')}
-                                <ArrowRight className="ms-2 h-5 w-5" />
-                            </Link>
-                        </Button>
-                        <Button asChild variant="outline" size="lg" className="border-white/30 text-white bg-transparent hover:bg-white/10 px-8 h-12 text-base">
-                            <Link href="/events">
-                                {tHero('upcomingEvents')}
-                            </Link>
-                        </Button>
+            {/* Hero Section - Dynamic Slider or Fallback */}
+            {sliders.length > 0 ? (
+                <HomeSlider sliders={sliders} />
+            ) : (
+                <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center luxury-gradient overflow-hidden">
+                    {/* Animated Background Elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute top-1/4 start-1/4 w-96 h-96 bg-gold/10 rounded-full blur-3xl animate-pulse" />
+                        <div className="absolute bottom-1/4 end-1/4 w-64 h-64 bg-navy-light/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
                     </div>
-                </div>
 
-                {/* Gradient Overlay */}
-                <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-background to-transparent" />
-            </section>
+                    <div className="container mx-auto px-4 text-center relative z-10">
+                        <Badge className="mb-6 bg-gold/20 text-gold border-gold/30 hover:bg-gold/30">
+                            <Sparkles className="w-3 h-3 me-1" />
+                            Premium Shopping Experience
+                        </Badge>
+
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight">
+                            {tHero('welcome')}
+                        </h1>
+
+                        <p className="text-xl md:text-2xl text-white/70 mb-10 max-w-2xl mx-auto">
+                            {tHero('subtitle')}
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <Button asChild size="lg" className="bg-gold hover:bg-gold-light text-black font-semibold px-8 h-12 text-base">
+                                <Link href="/shops">
+                                    {tHero('exploreShops')}
+                                    <ArrowRight className="ms-2 h-5 w-5" />
+                                </Link>
+                            </Button>
+                            <Button asChild variant="outline" size="lg" className="border-white/30 text-white bg-transparent hover:bg-white/10 px-8 h-12 text-base">
+                                <Link href="/events">
+                                    {tHero('upcomingEvents')}
+                                </Link>
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Gradient Overlay */}
+                    <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-background to-transparent" />
+                </section>
+            )}
 
             {/* Featured Shops - Bento Grid Style */}
             <section className="py-20 bg-background">

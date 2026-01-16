@@ -9,18 +9,11 @@ import {
     Calendar,
     Layers,
     MessageSquare,
-    TrendingUp,
-    Users,
-    Eye,
     Clock,
     ArrowUpRight,
     Sparkles,
     Zap,
-    Activity,
-    BarChart3,
-    Target,
-    Medal,
-    Flame
+    Activity
 } from 'lucide-react';
 
 import { useEffect, useState } from 'react';
@@ -303,57 +296,6 @@ export function OverviewClient({ data }: OverviewClientProps) {
                                     </MotionDiv>
                                 </Link>
                             ))}
-                        </CardContent>
-                    </Card>
-                </MotionDiv>
-            </div>
-
-            {/* Bottom Metrics - Premium Design */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <MotionDiv variants={itemVariants}>
-                    <Card className="border-0 bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-transparent overflow-hidden relative group">
-                        <div className="absolute top-0 end-0 w-32 h-32 bg-violet-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500" />
-                        <CardContent className="p-6 flex items-center gap-5 relative">
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-xl shadow-violet-500/30">
-                                <BarChart3 className="h-8 w-8 text-white" />
-                            </div>
-                            <div>
-                                <p className="text-3xl font-bold tracking-tight">%98.2</p>
-                                <p className="text-sm text-muted-foreground">Uptime</p>
-                                <p className="text-xs text-emerald-500 mt-1">↑ 0.3% bu hafta</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </MotionDiv>
-
-                <MotionDiv variants={itemVariants}>
-                    <Card className="border-0 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-transparent overflow-hidden relative group">
-                        <div className="absolute top-0 end-0 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500" />
-                        <CardContent className="p-6 flex items-center gap-5 relative">
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-xl shadow-amber-500/30">
-                                <Users className="h-8 w-8 text-white" />
-                            </div>
-                            <div>
-                                <p className="text-3xl font-bold tracking-tight">12.4K</p>
-                                <p className="text-sm text-muted-foreground">Bu Ay Ziyaretçi</p>
-                                <p className="text-xs text-emerald-500 mt-1">↑ 18% geçen aya göre</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </MotionDiv>
-
-                <MotionDiv variants={itemVariants}>
-                    <Card className="border-0 bg-gradient-to-br from-emerald-500/10 via-green-500/5 to-transparent overflow-hidden relative group">
-                        <div className="absolute top-0 end-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500" />
-                        <CardContent className="p-6 flex items-center gap-5 relative">
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-xl shadow-emerald-500/30">
-                                <Eye className="h-8 w-8 text-white" />
-                            </div>
-                            <div>
-                                <p className="text-3xl font-bold tracking-tight">45.2K</p>
-                                <p className="text-sm text-muted-foreground">Sayfa Görüntüleme</p>
-                                <p className="text-xs text-emerald-500 mt-1">↑ 23% geçen aya göre</p>
-                            </div>
                         </CardContent>
                     </Card>
                 </MotionDiv>

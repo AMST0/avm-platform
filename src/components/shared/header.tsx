@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
-import { Link } from '@/i18n/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 import { useSpotlightStore } from '@/lib/store';
 import { LanguageSwitcher } from './language-switcher';
 import { Button } from '@/components/ui/button';
@@ -29,9 +29,13 @@ const navigation = [
 export function Header() {
     const t = useTranslations('common');
     const locale = useLocale();
+    const pathname = usePathname();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const openSpotlight = useSpotlightStore((state) => state.open);
+
+    // Check if we're on homepage
+    const isHomePage = pathname === '/' || pathname === `/${locale}`;
 
     // Handle scroll for glassmorphism effect
     useEffect(() => {
@@ -70,18 +74,20 @@ export function Header() {
                             <span className="text-gold font-bold text-lg">A</span>
                         </div>
                         <div className="hidden sm:block">
-                            <span className="font-bold text-lg text-foreground">AVM</span>
-                            <span className="font-light text-muted-foreground ms-1">Platform</span>
+                            <span className={`font-bold text-lg ${isHomePage && !isScrolled ? 'text-white' : 'text-foreground'}`}>AVM</span>
+                            <span className={`font-light ms-1 ${isHomePage && !isScrolled ? 'text-white/70' : 'text-muted-foreground'}`}>Platform</span>
                         </div>
                     </Link>
 
-                    {/* Desktop Navigation */}
                     <nav className="hidden lg:flex items-center gap-1">
                         {navigation.map((item) => (
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className="px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors font-medium"
+                                className={`px-4 py-2 rounded-lg transition-colors font-medium ${isHomePage && !isScrolled
+                                        ? 'text-white/80 hover:text-white hover:bg-white/10'
+                                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                                    }`}
                             >
                                 {t(item.label)}
                             </Link>
