@@ -29,7 +29,7 @@ export async function generateStaticParams() {
         const shops = await getShops();
         return shops.map((shop) => ({ slug: shop.slug }));
     } catch (error) {
-        console.error("Static generation skipped for shops due to DB connectivity issues:", error);
+        if (process.env.NODE_ENV === 'development') console.error("Static generation skipped for shops due to DB connectivity issues:", error);
         return [];
     }
 }

@@ -8,8 +8,6 @@ export const ourFileRouter = {
     imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
         .onUploadComplete(async ({ metadata, file }) => {
             // This code RUNS ON YOUR SERVER after upload
-            console.log("Upload complete for userId:", "admin"); // TODO: Add auth
-            console.log("file url", file.url);
             return { uploadedBy: "admin" };
         }),
 } satisfies FileRouter;

@@ -32,9 +32,8 @@ export default async function HomePage({
     let sliders: any[] = [];
     try {
         sliders = await getSliders();
-        console.log(`[HomePage] Successfully fetched ${sliders.length} sliders`);
     } catch (error) {
-        console.error('[HomePage] Failed to fetch sliders:', error);
+        if (process.env.NODE_ENV === 'development') console.error('[HomePage] Failed to fetch sliders:', error);
         sliders = [];
     }
 

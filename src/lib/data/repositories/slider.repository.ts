@@ -28,11 +28,9 @@ function mapPrismaSliderToSlider(prismaSlider: any): Slider {
 }
 
 export async function getSliders(): Promise<Slider[]> {
-    console.log('[SliderRepository] Fetching active sliders...');
     const sliders = await prisma.slider.findMany({
         orderBy: { order: 'asc' },
     });
-    console.log(`[SliderRepository] Found ${sliders.length} sliders in DB`);
     return sliders.map(mapPrismaSliderToSlider);
 }
 
