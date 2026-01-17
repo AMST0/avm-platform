@@ -111,27 +111,51 @@ export default async function HomePage({
                             <Link
                                 key={shop.id}
                                 href={`/shops/${shop.slug}`}
-                                className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br from-card to-accent/5 border border-border/50 hover:border-gold/50 transition-all duration-300 hover:shadow-xl hover:shadow-gold/5 ${index === 0 ? 'md:col-span-2 md:row-span-2 min-h-[300px] lg:min-h-[400px]' : 'min-h-[200px]'
+                                className={`group relative overflow-hidden rounded-2xl border border-border/50 hover:border-gold/50 transition-all duration-500 hover:shadow-2xl hover:shadow-gold/10 hover:-translate-y-1 ${index === 0 ? 'md:col-span-2 md:row-span-2 min-h-[300px] lg:min-h-[400px]' : 'min-h-[200px]'
                                     }`}
                             >
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                {/* Background Image (Logo) */}
+                                {shop.logo ? (
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:to-gray-800">
+                                        <img
+                                            src={shop.logo}
+                                            alt={shop.name}
+                                            className={`absolute object-contain transition-all duration-500 group-hover:scale-110 ${index === 0
+                                                ? 'w-40 h-40 lg:w-56 lg:h-56 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20 group-hover:opacity-30'
+                                                : 'w-24 h-24 top-4 right-4 opacity-15 group-hover:opacity-25'
+                                                }`}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="absolute inset-0 bg-gradient-to-br from-card to-accent/5" />
+                                )}
 
+                                {/* Hover Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+
+                                {/* Content */}
                                 <div className="relative h-full p-6 flex flex-col justify-end">
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                                            <Store className="h-6 w-6 text-gold" />
-                                        </div>
-                                        <Badge variant="secondary" className="bg-white/10 backdrop-blur-md text-white border-0">
+                                        {shop.logo ? (
+                                            <div className="w-12 h-12 rounded-xl bg-white shadow-lg flex items-center justify-center overflow-hidden border border-white/20">
+                                                <img src={shop.logo} alt={shop.name} className="w-10 h-10 object-contain" />
+                                            </div>
+                                        ) : (
+                                            <div className="w-12 h-12 rounded-xl bg-gold/20 backdrop-blur-md flex items-center justify-center border border-gold/30">
+                                                <Store className="h-6 w-6 text-gold" />
+                                            </div>
+                                        )}
+                                        <Badge variant="secondary" className="bg-white/20 backdrop-blur-md text-white border-0 font-medium">
                                             {shop.floor}. Kat
                                         </Badge>
                                     </div>
 
-                                    <h3 className={`font-bold text-foreground group-hover:text-gold transition-colors ${index === 0 ? 'text-2xl lg:text-3xl' : 'text-xl'
+                                    <h3 className={`font-bold text-white group-hover:text-gold transition-colors ${index === 0 ? 'text-2xl lg:text-3xl' : 'text-xl'
                                         }`}>
                                         {shop.name}
                                     </h3>
 
-                                    <p className="text-muted-foreground text-sm mt-2 line-clamp-2">
+                                    <p className="text-white/70 text-sm mt-2 line-clamp-2">
                                         {shop.description?.[locale as Locale]}
                                     </p>
                                 </div>
@@ -164,20 +188,47 @@ export default async function HomePage({
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {upcomingEvents.slice(0, 3).map((event) => (
-                                <Card key={event.id} className="group overflow-hidden border-border/50 hover:border-gold/50 transition-all">
-                                    <CardContent className="p-6">
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-14 h-14 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
-                                                <Calendar className="h-7 w-7 text-gold" />
+                                <Link
+                                    key={event.id}
+                                    href={`/events/${event.slug}`}
+                                    className="group relative overflow-hidden rounded-2xl min-h-[280px] border border-border/50 hover:border-gold/50 transition-all duration-500 hover:shadow-2xl hover:shadow-gold/10 hover:-translate-y-1"
+                                >
+                                    {/* Background Image */}
+                                    {event.image ? (
+                                        <img
+                                            src={event.image}
+                                            alt={event.title[locale as Locale]}
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        />
+                                    ) : (
+                                        <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy-dark to-black" />
+                                    )}
+
+                                    {/* Gradient Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:from-black/95 transition-all duration-300" />
+
+                                    {/* Content */}
+                                    <div className="relative h-full p-6 flex flex-col justify-end">
+                                        {/* Date Badge */}
+                                        <div className="absolute top-4 left-4">
+                                            <div className="bg-gold text-black px-4 py-2 rounded-xl font-bold text-center shadow-lg">
+                                                <span className="text-2xl block leading-none">
+                                                    {new Date(event.startDate).getDate()}
+                                                </span>
+                                                <span className="text-xs uppercase tracking-wider">
+                                                    {new Date(event.startDate).toLocaleDateString(locale, { month: 'short' })}
+                                                </span>
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold text-lg text-foreground group-hover:text-gold transition-colors truncate">
-                                                    {event.title[locale as Locale]}
-                                                </h3>
-                                                <p className="text-sm text-muted-foreground mt-1">
-                                                    {event.location}
-                                                </p>
-                                                <p className="text-xs text-muted-foreground mt-2">
+                                        </div>
+
+                                        {/* Event Info */}
+                                        <div>
+                                            <h3 className="font-bold text-xl text-white group-hover:text-gold transition-colors mb-2">
+                                                {event.title[locale as Locale]}
+                                            </h3>
+                                            <div className="flex items-center gap-2 text-white/70 text-sm">
+                                                <Calendar className="h-4 w-4" />
+                                                <span>
                                                     {new Date(event.startDate).toLocaleDateString(locale, {
                                                         day: 'numeric',
                                                         month: 'long',
@@ -185,11 +236,14 @@ export default async function HomePage({
                                                         day: 'numeric',
                                                         month: 'long',
                                                     })}
-                                                </p>
+                                                </span>
                                             </div>
+                                            <p className="text-white/60 text-sm mt-1">
+                                                📍 {event.location}
+                                            </p>
                                         </div>
-                                    </CardContent>
-                                </Card>
+                                    </div>
+                                </Link>
                             ))}
                         </div>
                     </div>
