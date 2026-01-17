@@ -204,8 +204,8 @@ export default async function HomePage({
                                         <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy-dark to-black" />
                                     )}
 
-                                    {/* Gradient Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:from-black/95 transition-all duration-300" />
+                                    {/* Gradient Overlay - sadece alt kısımda metin için */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
                                     {/* Content */}
                                     <div className="relative h-full p-6 flex flex-col justify-end">

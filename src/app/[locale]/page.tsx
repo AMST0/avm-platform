@@ -184,8 +184,16 @@ export default async function HomePage({
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {upcomingEvents.slice(0, 3).map((event) => (
-                                <Card key={event.id} className="group overflow-hidden border-border/50 hover:border-gold/50 transition-all">
-                                    <CardContent className="p-6">
+                                <Card key={event.id} className="group overflow-hidden border-border/50 hover:border-gold/50 transition-all relative">
+                                    {/* Background Image */}
+                                    <div className="absolute inset-0 z-0">
+                                        <img
+                                            src={event.image}
+                                            alt=""
+                                            className="w-full h-full object-cover opacity-40 group-hover:opacity-50 transition-opacity"
+                                        />
+                                    </div>
+                                    <CardContent className="p-6 relative z-10">
                                         <div className="flex items-start gap-4">
                                             <div className="w-14 h-14 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
                                                 <Calendar className="h-7 w-7 text-gold" />
